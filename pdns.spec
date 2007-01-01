@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.20
-Release:	7%{?dist}
+Release:	8%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPL
@@ -95,6 +95,10 @@ make install DESTDIR=%{buildroot}
 %{__install} -p -D -m 0755 pdns/pdns %{buildroot}%{_initrddir}/pdns
 %{__mv} %{buildroot}%{_sysconfdir}/%{name}/pdns.conf{-dist,}
 
+# add the pdns user to the config file
+sed -i '1i\setuid=pdns' %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
+sed -i '2i\setgid=pdns' %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
+
 # strip the static rpath from the binaries
 chrpath --delete %{buildroot}%{_bindir}/pdns_control
 chrpath --delete %{buildroot}%{_bindir}/zone2ldap
@@ -103,7 +107,7 @@ chrpath --delete %{buildroot}%{_sbindir}/pdns_server
 chrpath --delete %{buildroot}%{_libdir}/%{name}/*.so
 
 %post
-if [ $1 = 1 ]; then
+if [ $1 -eq 1 ]; then
 	/sbin/chkconfig --add pdns
 	userid=`id -u pdns 2>/dev/null`
 	if [ x"$userid" = x ]; then
@@ -111,14 +115,9 @@ if [ $1 = 1 ]; then
 	fi
 fi
 %preun
-if [ "$1" = 0 ]; then
-	/sbin/service pdns stop >/dev/null 2>&1
+if [ $1 -eq 0 ]; then
+	/sbin/service pdns stop >/dev/null 2>&1 || :
 	/sbin/chkconfig --del pdns
-fi
-
-%postun
-if [ "$1" -ge "1" ]; then
-	/sbin/service pdns reload >/dev/null 2>&1
 fi
 
 %clean
@@ -166,6 +165,10 @@ fi
 
 
 %changelog
+* Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-8
+- Add the pdns user and group to the config file
+- Don't restart pdns on an upgrade
+- Minor cleanups in scriptlets
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-7
 - Fixed typo in scriptlet
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-6
