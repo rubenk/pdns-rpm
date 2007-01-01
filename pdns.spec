@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.20
-Release:	5%{?dist}
+Release:	6%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPL
@@ -105,7 +105,10 @@ chrpath --delete %{buildroot}%{_libdir}/%{name}/*.so
 %post
 if [ $1 = 1 ]; then
 	/sbin/chkconfig --add pdns
-	%{_sbindir}/useradd -c "PowerDNS user" -s /sbin/nologin -r -d / pdns
+	userid = `id -u pdns 2>/dev/null`
+	if [ x"$userid" = x ]; then
+		%{_sbindir}/useradd -c "PowerDNS user" -s /sbin/nologin -r -d / pdns > /dev/null || :
+	fi
 fi
 %preun
 if [ "$1" = 0 ]; then
@@ -163,6 +166,8 @@ fi
 
 
 %changelog
+* Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-6
+- Check if user pdns exists before adding it
 * Sat Dec 30 2006 <ruben@rubenkerkhof.com> 2.9.20-5
 - Strip rpath from the backends as well
 * Fri Dec 29 2006 <ruben@rubenkerkhof.com> 2.9.20-4
