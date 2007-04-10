@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.20
-Release:	8%{?dist}
+Release:	9%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPL
@@ -10,6 +10,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
 Patch1:		%{name}-avoid-version.patch
+
+Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
+Requires(preun):	/sbin/service, /sbin/chkconfig
 
 BuildRequires:	boost-devel, chrpath
 Provides:	powerdns = %{version}-%{release}
@@ -165,6 +168,8 @@ fi
 
 
 %changelog
+* Thu Apr 10 2007 <ruben@rubenkerkhof.com> 2.9.20-9
+- Add Requires for chkconfig, service and useradd (#235582)
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-8
 - Add the pdns user and group to the config file
 - Don't restart pdns on an upgrade
