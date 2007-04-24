@@ -1,6 +1,6 @@
---- pdns-2.9.20/modules/ldapbackend/Makefile.in.avoid-version	2006-12-18 00:11:42.000000000 +0100
-+++ pdns-2.9.20/modules/ldapbackend/Makefile.in	2006-12-18 00:13:17.000000000 +0100
-@@ -205,7 +205,7 @@
+--- pdns-2.9.21/modules/ldapbackend/Makefile.in.avoid-version	2007-04-24 09:02:39.000000000 +0200
++++ pdns-2.9.21/modules/ldapbackend/Makefile.in	2007-04-24 09:04:35.000000000 +0200
+@@ -214,7 +214,7 @@
  EXTRA_DIST = OBJECTFILES OBJECTLIBS
  libldapbackend_la_SOURCES = ldapbackend.cc ldapbackend.hh \
  		powerldap.hh powerldap.cc utils.hh
@@ -9,9 +9,9 @@
  libldapbackend_la_LIBADD = -lldap
  all: all-am
  
---- pdns-2.9.20/modules/pipebackend/Makefile.in.avoid-version	2006-12-18 00:07:21.000000000 +0100
-+++ pdns-2.9.20/modules/pipebackend/Makefile.in	2006-12-18 00:07:36.000000000 +0100
-@@ -209,7 +209,7 @@
+--- pdns-2.9.21/modules/pipebackend/Makefile.in.avoid-version	2007-04-24 09:04:56.000000000 +0200
++++ pdns-2.9.21/modules/pipebackend/Makefile.in	2007-04-24 09:05:12.000000000 +0200
+@@ -217,7 +217,7 @@
  EXTRA_DIST = OBJECTFILES OBJECTLIBS backend.pl
  lib_LTLIBRARIES = libpipebackend.la
  libpipebackend_la_SOURCES = pipebackend.cc pipebackend.hh coprocess.cc coprocess.hh
@@ -20,9 +20,9 @@
  all: all-am
  
  .SUFFIXES:
---- pdns-2.9.20/modules/gpgsqlbackend/Makefile.in.avoid-version	2006-12-18 00:08:23.000000000 +0100
-+++ pdns-2.9.20/modules/gpgsqlbackend/Makefile.in	2006-12-18 00:13:51.000000000 +0100
-@@ -208,7 +208,7 @@
+--- pdns-2.9.21/modules/gpgsqlbackend/Makefile.in.avoid-version	2007-04-24 09:00:43.000000000 +0200
++++ pdns-2.9.21/modules/gpgsqlbackend/Makefile.in	2007-04-24 09:01:19.000000000 +0200
+@@ -217,7 +217,7 @@
  		spgsql.hh spgsql.cc
  
  libgpgsqlbackend_la_LDFLAGS = @PGSQL_lib@ -Wl,-Bstatic -lpq \
@@ -31,9 +31,9 @@
  
  libgpgsqlbackend_la_LIBADD = -lssl -lcrypt -lcrypto
  all: all-am
---- pdns-2.9.20/modules/gmysqlbackend/Makefile.in.avoid-version	2006-12-18 00:07:52.000000000 +0100
-+++ pdns-2.9.20/modules/gmysqlbackend/Makefile.in	2006-12-18 00:08:15.000000000 +0100
-@@ -207,7 +207,7 @@
+--- pdns-2.9.21/modules/gmysqlbackend/Makefile.in.avoid-version	2007-04-24 09:00:14.000000000 +0200
++++ pdns-2.9.21/modules/gmysqlbackend/Makefile.in	2007-04-24 09:00:34.000000000 +0200
+@@ -216,7 +216,7 @@
  libgmysqlbackend_la_SOURCES = gmysqlbackend.cc gmysqlbackend.hh \
  		smysql.hh smysql.cc
  
@@ -42,9 +42,20 @@
  all: all-am
  
  .SUFFIXES:
---- pdns-2.9.20/modules/geobackend/Makefile.in.avoid-version	2006-03-15 19:33:21.000000000 +0100
-+++ pdns-2.9.20/modules/geobackend/Makefile.in	2006-12-17 23:58:33.000000000 +0100
-@@ -204,7 +204,7 @@
+--- pdns-2.9.21/modules/gsqlite3backend/Makefile.in.avoid-version	2007-04-24 09:02:09.000000000 +0200
++++ pdns-2.9.21/modules/gsqlite3backend/Makefile.in	2007-04-24 09:02:24.000000000 +0200
+@@ -216,7 +216,7 @@
+ libgsqlite3backend_la_SOURCES = gsqlite3backend.cc gsqlite3backend.hh \
+                 ssqlite3.hh ssqlite3.cc
+ 
+-libgsqlite3backend_la_LDFLAGS = -module -lsqlite3
++libgsqlite3backend_la_LDFLAGS = -module -lsqlite3 -avoid-version
+ all: all-am
+ 
+ .SUFFIXES:
+--- pdns-2.9.21/modules/geobackend/Makefile.in.avoid-version	2007-04-24 08:58:20.000000000 +0200
++++ pdns-2.9.21/modules/geobackend/Makefile.in	2007-04-24 08:59:44.000000000 +0200
+@@ -213,7 +213,7 @@
  EXTRA_DIST = OBJECTFILES OBJECTLIBS
  lib_LTLIBRARIES = libgeobackend.la
  libgeobackend_la_SOURCES = geobackend.cc geobackend.hh ippreftree.cc ippreftree.hh

@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.20
-Release:	9%{?dist}
+Version:	2.9.21
+Release:	1%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPL
@@ -51,6 +51,12 @@ Group:		System Environment/Daemons
 Requires:	%{name} = %{version}-%{release}
 BuildRequires:	openldap-devel
 
+%package	backend-sqlite
+Summary:	SQLite backend for %{name}
+Group:		System Environment/Daemons
+Requires:	%{name} = %{version}-%{release}
+BuildRequires:	sqlite-devel
+
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
 
@@ -68,6 +74,9 @@ IP address ranges or based on the geographic location
 %description	backend-ldap
 This package contains the ldap backend for %{name}
 
+%description	backend-sqlite
+This package contains the SQLite backend for %{name}
+
 
 %prep
 %setup -q
@@ -82,11 +91,10 @@ export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
 	--libdir=%{_libdir}/%{name} \
 	--disable-static \
 	--with-modules='' \
-	--with-dynmodules='pipe gmysql gpgsql geo ldap' \
-	--with-mysql-includes=%{_includedir}/mysql \
+	--with-dynmodules='pipe gmysql gpgsql geo ldap gsqlite3' \
 	--with-mysql-lib=%{_libdir}/mysql \
-	--with-pgsql-includes=%{_includedir} \
-	--with-pgsql-lib=%{_libdir}
+	--with-pgsql-lib=%{_libdir} \
+	--with-sqlite3-lib=%{_libdir}
 
 make %{?_smp_mflags}
 
@@ -166,8 +174,16 @@ fi
 %doc pdns/COPYING
 %{_libdir}/%{name}/libldapbackend.so
 
+%files backend-sqlite
+%defattr(-,root,root,-)
+%doc pdns/COPYING
+%{_libdir}/%{name}/libgsqlite3backend.so
+
 
 %changelog
+* Tue Apr 24 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-1
+- Upstream released 2.9.21
+- Enabled new SQLite backend
 * Thu Apr 10 2007 <ruben@rubenkerkhof.com> 2.9.20-9
 - Add Requires for chkconfig, service and useradd (#235582)
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-8
