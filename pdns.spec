@@ -1,10 +1,10 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.21
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 Group:		System Environment/Daemons
-License:	GPL
+License:	GPLv2
 URL:		http://powerdns.com
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
@@ -166,7 +166,7 @@ fi
 
 %files backend-geo
 %defattr(-,root,root,-)
-%doc pdns/COPYING
+%doc pdns/COPYING modules/geobackend/README
 %{_libdir}/%{name}/libgeobackend.so
 
 %files backend-ldap
@@ -181,6 +181,9 @@ fi
 
 
 %changelog
+* Tue Sep 11 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-2
+- Fix license tag
+- Add README for geo backend to docs
 * Tue Apr 24 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-1
 - Upstream released 2.9.21
 - Enabled new SQLite backend
