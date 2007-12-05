@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.21
-Release:	2%{?dist}
+Release:	3%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -181,6 +181,9 @@ fi
 
 
 %changelog
+* Wed Dec 05 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-2
+- Rebuild to pick up new openldap
+
 * Tue Sep 11 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-2
 - Fix license tag
 - Add README for geo backend to docs
