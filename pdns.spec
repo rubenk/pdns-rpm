@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.21
-Release:	3%{?dist}
+Release:	4%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -10,6 +10,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
 Patch1:		%{name}-avoid-version.patch
+Patch2:		%{name}-gcc43.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -82,6 +83,7 @@ This package contains the SQLite backend for %{name}
 %setup -q
 %patch0 -p1 -b .fixinit
 %patch1 -p1 -b .avoid-version
+%patch2 -p1
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -181,6 +183,9 @@ fi
 
 
 %changelog
+* Sat Feb 09 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-4
+- GCC 4.3 fixes
+
 * Wed Dec 05 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-3
 - Rebuild to pick up new openldap
 
