@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.21
-Release:	4%{?dist}
+Version:	2.9.21.1
+Release:	1%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -183,6 +183,9 @@ fi
 
 
 %changelog
+* Wed Aug 06 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.1-1
+- CVE-2008-3337
+
 * Sat Feb 09 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-4
 - GCC 4.3 fixes
 
