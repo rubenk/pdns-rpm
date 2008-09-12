@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.21.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -11,6 +11,7 @@ Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
 Patch1:		%{name}-avoid-version.patch
 Patch2:		%{name}-gcc43.patch
+Patch3:         %{name}-bz461768.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -84,6 +85,7 @@ This package contains the SQLite backend for %{name}
 %patch0 -p1 -b .fixinit
 %patch1 -p1 -b .avoid-version
 %patch2 -p1
+%patch3 -p3
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -183,6 +185,9 @@ fi
 
 
 %changelog
+* Fri Sep 12 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.1-2
+- Fix handling of AAAA records (bz #461768)
+
 * Wed Aug 06 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.1-1
 - CVE-2008-3337
 
