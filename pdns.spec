@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.21.1
-Release:	2%{?dist}
+Version:	2.9.21.2
+Release:	1%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -185,6 +185,9 @@ fi
 
 
 %changelog
+* Mon Nov 17 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.2-1
+- Upstream released new version
+
 * Fri Sep 12 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.1-2
 - Fix handling of AAAA records (bz #461768)
 
