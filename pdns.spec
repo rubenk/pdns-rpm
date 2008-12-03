@@ -1,17 +1,15 @@
+%define alphatag rc2
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.21.2
-Release:	1%{?dist}
+Version:	2.9.22
+Release:	1.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
+Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}-%{alphatag}.tar.gz
 Patch0:		%{name}-fixinit.patch
-Patch1:		%{name}-avoid-version.patch
-Patch2:		%{name}-gcc43.patch
-Patch3:         %{name}-bz461768.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -81,11 +79,8 @@ This package contains the SQLite backend for %{name}
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-%{alphatag}
 %patch0 -p1 -b .fixinit
-%patch1 -p1 -b .avoid-version
-%patch2 -p1
-%patch3 -p3
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -185,6 +180,10 @@ fi
 
 
 %changelog
+* Wed Dec 03 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-1.rc2
+- Upstream releasd new release candidate
+- Drop patches which are upstreamed
+
 * Mon Nov 17 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.2-1
 - Upstream released new version
 

@@ -1,6 +1,7 @@
---- pdns-2.9.20/pdns/pdns.in.fixinit	2006-12-17 18:14:14.000000000 +0100
-+++ pdns-2.9.20/pdns/pdns.in	2006-12-17 18:15:42.000000000 +0100
-@@ -47,6 +47,7 @@
+diff -up pdns-2.9.22-rc2/pdns/pdns.in.fixinit pdns-2.9.22-rc2/pdns/pdns.in
+--- pdns-2.9.22-rc2/pdns/pdns.in.fixinit	2008-02-03 13:14:00.000000000 +0100
++++ pdns-2.9.22-rc2/pdns/pdns.in	2008-12-03 04:07:26.000000000 +0100
+@@ -47,6 +47,7 @@ case "$1" in
  		if test "$NOTRUNNING" = "0" 
  		then 
  			doPC quit
@@ -8,7 +9,7 @@
  			echo $ret
  		else
  			echo "not running"
-@@ -57,6 +58,7 @@
+@@ -57,6 +58,7 @@ case "$1" in
  	force-stop)
  		echo -n "Stopping PowerDNS authoritative nameserver: "
  		killall -v -9 pdns_server
@@ -16,7 +17,7 @@
  		echo "killed"
  	;;
  
-@@ -69,6 +71,7 @@
+@@ -69,6 +71,7 @@ case "$1" in
  			$pdns_server --daemon --guardian=yes
  			if test "$?" = "0"
  			then
