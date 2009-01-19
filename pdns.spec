@@ -1,4 +1,4 @@
-%define alphatag rc2
+%define alphatag rc3
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
@@ -180,8 +180,11 @@ fi
 
 
 %changelog
+* Mon Jan 19 2009 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-1.rc3
+- New release candidate
+
 * Wed Dec 03 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-1.rc2
-- Upstream releasd new release candidate
+- Upstream released new release candidate
 - Drop patches which are upstreamed
 
 * Mon Nov 17 2008 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21.2-1
