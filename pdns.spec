@@ -2,7 +2,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	1.%{alphatag}%{?dist}
+Release:	2.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -180,6 +180,9 @@ fi
 
 
 %changelog
+* Fri Jan 23 2009 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-2.rc3
+- Rebuild for new libmysqlclient
+
 * Mon Jan 19 2009 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-1.rc3
 - New release candidate
 
