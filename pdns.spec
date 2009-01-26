@@ -1,14 +1,13 @@
-%define alphatag rc3
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	2.%{alphatag}%{?dist}
+Release:	3%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}-%{alphatag}.tar.gz
+Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
@@ -79,7 +78,7 @@ This package contains the SQLite backend for %{name}
 
 
 %prep
-%setup -q -n %{name}-%{version}-%{alphatag}
+%setup -q
 %patch0 -p1 -b .fixinit
 
 %build
@@ -180,6 +179,9 @@ fi
 
 
 %changelog
+* Mon Jan 26 2009 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-3
+- Upstream released new version
+
 * Fri Jan 23 2009 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-2.rc3
 - Rebuild for new libmysqlclient
 
