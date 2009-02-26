@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	4%{?dist}
+Release:	5%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -9,6 +9,7 @@ URL:		http://powerdns.com
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
+Patch1:		%{name}-gcc44.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -80,6 +81,7 @@ This package contains the SQLite backend for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .fixinit
+%patch1 -p1 -b .gcc44
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -179,6 +181,9 @@ fi
 
 
 %changelog
+* Thu Feb 26 2009 Ruben Kerkhof <ruben@rubenkerkhof.com> - 2.9.22-5
+- Fix build with gcc4.4
+
 * Thu Feb 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.9.22-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
