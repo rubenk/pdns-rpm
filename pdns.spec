@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	7%{?dist}
+Release:	8%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -10,6 +10,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
 Patch1:		%{name}-gcc44.patch
+Patch2:		pdns-fix-postgres-detection.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -82,6 +83,7 @@ This package contains the SQLite backend for %{name}
 %setup -q
 %patch0 -p1 -b .fixinit
 %patch1 -p1 -b .gcc44
+%patch2 -p1 -b .postgres
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -93,7 +95,6 @@ export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
 	--with-modules='' \
 	--with-dynmodules='pipe gmysql gpgsql geo ldap gsqlite3' \
 	--with-mysql-lib=%{_libdir}/mysql \
-	--with-pgsql-lib=%{_libdir} \
 	--with-sqlite3-lib=%{_libdir}
 
 make %{?_smp_mflags}
@@ -181,6 +182,9 @@ fi
 
 
 %changelog
+* Thu Jan 14 2010  2.9.22-8
+- Fix postgres lib detection (#555462)
+
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 2.9.22-7
 - rebuilt with new openssl
 
