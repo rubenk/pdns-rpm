@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	8%{?dist}
+Release:	9%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -182,7 +182,10 @@ fi
 
 
 %changelog
-* Thu Jan 14 2010  2.9.22-8
+* Thu Jan 14 2010 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-9
+- Fix changelog entry
+
+* Thu Jan 14 2010 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-8
 - Fix postgres lib detection (#555462)
 
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 2.9.22-7
