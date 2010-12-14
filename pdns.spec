@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	9%{?dist}
+Release:	10%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -11,6 +11,7 @@ Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
 Patch1:		%{name}-gcc44.patch
 Patch2:		pdns-fix-postgres-detection.patch
+Patch3:		pdns-fix-crash-on-sigstop.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -84,6 +85,7 @@ This package contains the SQLite backend for %{name}
 %patch0 -p1 -b .fixinit
 %patch1 -p1 -b .gcc44
 %patch2 -p1 -b .postgres
+%patch3 -p1 -b .sigstop
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -182,6 +184,9 @@ fi
 
 
 %changelog
+* Tue Dec 14 2010 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-10
+- Fix crash on SIGSTOP and SIGCONT, thanks to Anders Kaseorg (#652841)
+
 * Thu Jan 14 2010 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-9
 - Fix changelog entry
 
