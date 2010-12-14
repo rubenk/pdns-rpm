@@ -1,0 +1,22 @@
+diff -up pdns-2.9.22/configure.orig pdns-2.9.22/configure
+--- pdns-2.9.22/configure.orig	2010-01-14 20:40:16.000000000 +0100
++++ pdns-2.9.22/configure	2010-01-14 20:41:13.000000000 +0100
+@@ -23298,7 +23298,7 @@ if test "${with_pgsql+set}" = set; then
+   withval=$with_pgsql; PGSQL_lib_check="$withval/lib/pgsql $with_pgsql/lib"
+ 	PGSQL_inc_check="$withval/include/pgsql"
+ else
+-  PGSQL_lib_check="/usr/local/pgsql/lib/pgsql /usr/local/lib/pgsql /opt/pgsql/lib/pgsql /usr/lib/pgsql /usr/local/pgsql/lib /usr/local/lib /opt/pgsql/lib /usr/lib"
++  PGSQL_lib_check="/usr/local/pgsql/lib/pgsql /usr/local/lib/pgsql /opt/pgsql/lib/pgsql /usr/lib/pgsql /usr/local/pgsql/lib /usr/local/lib /opt/pgsql/lib /usr/lib /usr/lib64"
+ 	PGSQL_inc_check="/usr/local/pgsql/include/pgsql /usr/include /usr/local/include/postgresql/ /usr/local/include /opt/pgsql/include/pgsql /opt/pgsql/include /usr/include/pgsql/ /usr/include/postgresql"
+ fi
+ 
+@@ -23318,8 +23318,7 @@ fi
+ echo $ECHO_N "checking for PgSQL library directory... $ECHO_C" >&6; }
+ 	PGSQL_libdir=
+ 	for m in $PGSQL_lib_check; do
+-	        if test -d "$m" && \
+-		   (test -f "$m/libpq.a" || test -f "$m/libpq++.a")
++	        if test -d "$m" && test -f "$m/libpq.so"
+ 	        then
+ 	                PGSQL_libdir=$m
+ 	                break
