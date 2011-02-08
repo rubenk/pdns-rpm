@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	10%{?dist}
+Release:	11%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -184,6 +184,9 @@ fi
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.9.22-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Tue Dec 14 2010 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-10
 - Fix crash on SIGSTOP and SIGCONT, thanks to Anders Kaseorg (#652841)
 
