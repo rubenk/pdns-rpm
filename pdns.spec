@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	2.9.22
-Release:	11%{?dist}
+Release:	12%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -184,6 +184,9 @@ fi
 
 
 %changelog
+* Wed Mar 23 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-12
+- Rebuilt for new mysqlclient
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.9.22-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
