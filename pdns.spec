@@ -1,17 +1,17 @@
+%global alphatag pre.20110327.2103
+
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.22
-Release:	13%{?dist}
+Version:	3.0
+Release:	1.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
+Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}-%{alphatag}.tar.gz
 Patch0:		%{name}-fixinit.patch
-Patch1:		%{name}-gcc44.patch
-Patch2:		pdns-fix-postgres-detection.patch
-Patch3:		pdns-fix-crash-on-sigstop.patch
+Patch1:		pdns-fix-postgres-detection.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -81,11 +81,9 @@ This package contains the SQLite backend for %{name}
 
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-%{alphatag}
 %patch0 -p1 -b .fixinit
-%patch1 -p1 -b .gcc44
-%patch2 -p1 -b .postgres
-%patch3 -p1 -b .sigstop
+%patch1 -p1 -b .postgres
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -184,6 +182,11 @@ fi
 
 
 %changelog
+* Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-1.pre.20110327.2103
+- Upstream released new pre-release version
+- Now with DNSSEC support
+- Drop merged patches
+
 * Wed Mar 23 2011 Dan Horák <dan@danny.cz> - 2.9.22-13
 - rebuilt for mysql 5.5.10 (soname bump in libmysqlclient)
 
