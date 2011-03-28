@@ -3,7 +3,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	2.%{alphatag}%{?dist}
+Release:	3.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -137,8 +137,10 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc ChangeLog TODO pdns/COPYING
+%doc ChangeLog TODO pdns
+%{_bindir}/dnsreplay
 %{_bindir}/pdns_control
+%{_bindir}/pdnssec
 %{_bindir}/zone2ldap
 %{_bindir}/zone2sql
 %{_sbindir}/pdns_server
@@ -152,36 +154,40 @@ fi
 
 %files backend-mysql
 %defattr(-,root,root,-)
-%doc pdns/COPYING
+%doc COPYING
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
 %defattr(-,root,root,-)
-%doc pdns/COPYING
+%doc COPYING
 %{_libdir}/%{name}/libgpgsqlbackend.so
 
 %files backend-pipe
 %defattr(-,root,root,-)
-%doc pdns/COPYING
+%doc COPYING
 %{_libdir}/%{name}/libpipebackend.so
 
 %files backend-geo
 %defattr(-,root,root,-)
-%doc pdns/COPYING modules/geobackend/README
+%doc COPYING modules/geobackend/README
 %{_libdir}/%{name}/libgeobackend.so
 
 %files backend-ldap
 %defattr(-,root,root,-)
-%doc pdns/COPYING
+%doc COPYING
 %{_libdir}/%{name}/libldapbackend.so
 
 %files backend-sqlite
 %defattr(-,root,root,-)
-%doc pdns/COPYING
+%doc COPYING
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 
 %changelog
+* Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-3.pre.20110327.2103
+- License file moved a directory up
+- Add pdnssec and dnsreplay commands
+
 * Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-2.pre.20110327.2103
 - Add lua BuildRequires
 
