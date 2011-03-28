@@ -3,7 +3,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	1.%{alphatag}%{?dist}
+Release:	2.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -16,7 +16,7 @@ Patch1:		pdns-fix-postgres-detection.patch
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
 
-BuildRequires:	boost-devel, chrpath
+BuildRequires:	boost-devel, chrpath, lua-devel
 Provides:	powerdns = %{version}-%{release}
 
 %description
@@ -182,6 +182,9 @@ fi
 
 
 %changelog
+* Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-2.pre.20110327.2103
+- Add lua BuildRequires
+
 * Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-1.pre.20110327.2103
 - Upstream released new pre-release version
 - Now with DNSSEC support
