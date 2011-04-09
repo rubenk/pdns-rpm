@@ -3,7 +3,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	3.%{alphatag}%{?dist}
+Release:	4.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -184,6 +184,9 @@ fi
 
 
 %changelog
+* Sat Apr 09 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-4.
+- Rebuilt for new boost
+
 * Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-3.pre.20110327.2103
 - License file moved a directory up
 - Add pdnssec and dnsreplay commands
