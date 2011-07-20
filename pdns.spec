@@ -1,22 +1,24 @@
-%global alphatag pre.20110327.2103
+%global alphatag rc3
 
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	4.%{alphatag}%{?dist}
+Release:	5.%{alphatag}%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}-%{alphatag}.tar.gz
-Patch0:		%{name}-fixinit.patch
-Patch1:		pdns-fix-postgres-detection.patch
+Source1:	pdns.service
+Patch0:		pdns-fix-mongo-backend.patch
+Patch1:		pdns-fix-lua-detection.patch
 
-Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
-Requires(preun):	/sbin/service, /sbin/chkconfig
+Requires(pre):	shadow-utils
+Requires(post):	systemd-units, systemd-sysv
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
-BuildRequires:	boost-devel, chrpath, lua-devel
+BuildRequires:	boost-devel, chrpath, lua-devel, cryptopp-devel, systemd-units
 Provides:	powerdns = %{version}-%{release}
 
 %description
@@ -28,36 +30,42 @@ Furthermore, PowerDNS interfaces with almost any database.
 %package	backend-mysql
 Summary:	MySQL backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	mysql-devel
 
 %package	backend-postgresql
 Summary:	PostgreSQL backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	postgresql-devel
 
 %package	backend-pipe
 Summary:	Pipe backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %package	backend-geo
 Summary:	Geo backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 
 %package	backend-ldap
 Summary:	LDAP backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	openldap-devel
 
 %package	backend-sqlite
 Summary:	SQLite backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	sqlite-devel
+
+%package	backend-mongodb
+Summary:	MongoDB backend for %{name}
+Group:		System Environment/Daemons
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+BuildRequires:	mongodb-devel
 
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
@@ -79,11 +87,14 @@ This package contains the ldap backend for %{name}
 %description	backend-sqlite
 This package contains the SQLite backend for %{name}
 
+%description	backend-mongodb
+This package contains the MongoDB backend for %{name}
+
 
 %prep
 %setup -q -n %{name}-%{version}-%{alphatag}
-%patch0 -p1 -b .fixinit
-%patch1 -p1 -b .postgres
+%patch0 -p1 -b .fixmongo
+%patch1 -p1 -b .fixlua
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -93,18 +104,19 @@ export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
 	--libdir=%{_libdir}/%{name} \
 	--disable-static \
 	--with-modules='' \
-	--with-dynmodules='pipe gmysql gpgsql geo ldap gsqlite3' \
-	--with-mysql-lib=%{_libdir}/mysql \
-	--with-sqlite3-lib=%{_libdir}
+	--with-lua \
+	--with-dynmodules='pipe gmysql gpgsql geo ldap gsqlite3 mongodb' \
+	--enable-cryptopp
+
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 make %{?_smp_mflags}
 
 %install
-%{__rm} -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 %{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
-%{__install} -p -D -m 0755 pdns/pdns %{buildroot}%{_initrddir}/pdns
 %{__mv} %{buildroot}%{_sysconfdir}/%{name}/pdns.conf{-dist,}
 
 # add the pdns user to the config file
@@ -118,26 +130,55 @@ chrpath --delete %{buildroot}%{_bindir}/zone2sql
 chrpath --delete %{buildroot}%{_sbindir}/pdns_server
 chrpath --delete %{buildroot}%{_libdir}/%{name}/*.so
 
+# Copy systemd service file
+install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/pdns.service
+
+
+%pre
+getent group pdns >/dev/null || groupadd -r pdns
+getent passwd pdns >/dev/null || \
+	useradd -r -g pdns -d / -s /sbin/nologin \
+	-c "PowerDNS user" pdns
+exit 0
+
+
 %post
 if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add pdns
-	userid=`id -u pdns 2>/dev/null`
-	if [ x"$userid" = x ]; then
-		%{_sbindir}/useradd -c "PowerDNS user" -s /sbin/nologin -r -d / pdns > /dev/null || :
-	fi
-fi
-%preun
-if [ $1 -eq 0 ]; then
-	/sbin/service pdns stop >/dev/null 2>&1 || :
-	/sbin/chkconfig --del pdns
+	# Initial installation
+	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
 fi
 
-%clean
-%{__rm} -rf %{buildroot}
+
+%preun
+if [ $1 -eq 0 ]; then
+	# Package removal; not upgrade
+	/bin/systemctl --no-reload disable pdns.service &>/dev/null || :
+	/bin/systemctl stop pdns.service &>/dev/null || :
+fi
+
+
+%postun
+/bin/systemctl daemon-reload &>/dev/null || :
+if [ $1 -ge 1 ]; then
+	# Package upgrade; not install
+	/bin/systemctl try-restart pdns.service &>/dev/null || :
+fi
+
+
+%triggerun -- pdns < 3.0-rc3
+# Save the current service runlevel info
+# User must manually run systemd-sysv-convert --apply pdns
+# to migrate them to systemd targets
+%{_bindir}/systemd-sysv-convert --save pdns &>/dev/null ||:
+
+# Run these because the SysV package being removed won't do them
+/sbin/chkconfig --del pdns &>/dev/null || :
+/bin/systemctl try-restart pdns.service &>/dev/null || :
+
 
 %files
 %defattr(-,root,root,-)
-%doc ChangeLog TODO pdns
+%doc COPYING README
 %{_bindir}/dnsreplay
 %{_bindir}/pdns_control
 %{_bindir}/pdnssec
@@ -147,44 +188,49 @@ fi
 %{_mandir}/man8/pdns_control.8.gz
 %{_mandir}/man8/pdns_server.8.gz
 %{_mandir}/man8/zone2sql.8.gz
-%{_initrddir}/pdns
+%{_unitdir}/pdns.service
 %dir %{_libdir}/%{name}/
 %dir %{_sysconfdir}/%{name}/
 %config(noreplace) %{_sysconfdir}/%{name}/pdns.conf
 
 %files backend-mysql
 %defattr(-,root,root,-)
-%doc COPYING
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
 %defattr(-,root,root,-)
-%doc COPYING
 %{_libdir}/%{name}/libgpgsqlbackend.so
 
 %files backend-pipe
 %defattr(-,root,root,-)
-%doc COPYING
 %{_libdir}/%{name}/libpipebackend.so
 
 %files backend-geo
 %defattr(-,root,root,-)
-%doc COPYING modules/geobackend/README
+%doc modules/geobackend/README
 %{_libdir}/%{name}/libgeobackend.so
 
 %files backend-ldap
 %defattr(-,root,root,-)
-%doc COPYING
 %{_libdir}/%{name}/libldapbackend.so
 
 %files backend-sqlite
 %defattr(-,root,root,-)
-%doc COPYING
 %{_libdir}/%{name}/libgsqlite3backend.so
+
+%files backend-mongodb
+%defattr(-,root,root,-)
+%{_libdir}/%{name}/libmongodbbackend.so
 
 
 %changelog
-* Sat Apr 09 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-4.
+* Wed Jul 20 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-5.rc3
+- New release candidate
+- Add MongoDB backend
+- Enable LUA support
+- Convert to systemd
+
+* Sat Apr 09 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-4.pre.20110327.2103.fc16
 - Rebuilt for new boost
 
 * Mon Mar 28 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-3.pre.20110327.2103

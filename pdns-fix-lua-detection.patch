@@ -1,0 +1,12 @@
+diff -up pdns-3.0-rc3/configure.orig pdns-3.0-rc3/configure
+--- pdns-3.0-rc3/configure.orig	2011-07-20 14:09:39.960000514 +0200
++++ pdns-3.0-rc3/configure	2011-07-20 14:09:46.288007162 +0200
+@@ -16494,7 +16494,7 @@ $as_echo_n "checking if with lua... " >&
+ 
+ # Check whether --with-lua was given.
+ if test "${with_lua+set}" = set; then :
+-  withval=$with_lua; WITH_LUA=$withval]
++  withval=$with_lua; WITH_LUA=$withval
+ else
+   WITH_LUA=yes
+ fi
