@@ -1,14 +1,12 @@
-%global alphatag rc3
-
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	5.%{alphatag}%{?dist}
+Release:	6%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}-%{alphatag}.tar.gz
+Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1:	pdns.service
 Patch0:		pdns-fix-mongo-backend.patch
 Patch1:		pdns-fix-lua-detection.patch
@@ -92,7 +90,7 @@ This package contains the MongoDB backend for %{name}
 
 
 %prep
-%setup -q -n %{name}-%{version}-%{alphatag}
+%setup -q
 %patch0 -p1 -b .fixmongo
 %patch1 -p1 -b .fixlua
 
@@ -224,6 +222,9 @@ fi
 
 
 %changelog
+* Mon Jul 25 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-6
+- Upstream released new version
+
 * Wed Jul 20 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-5.rc3
 - New release candidate
 - Add MongoDB backend
