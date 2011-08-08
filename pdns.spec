@@ -1,7 +1,9 @@
+%global backends %{nil}
+
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	6%{?dist}
+Release:	7%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -30,40 +32,49 @@ Summary:	MySQL backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	mysql-devel
+%global backends %{backends} gmysql
 
 %package	backend-postgresql
 Summary:	PostgreSQL backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	postgresql-devel
+%global backends %{backends} gpgsql
 
 %package	backend-pipe
 Summary:	Pipe backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} pipe
 
 %package	backend-geo
 Summary:	Geo backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} geo
 
 %package	backend-ldap
 Summary:	LDAP backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	openldap-devel
+%global backends %{backends} ldap
 
 %package	backend-sqlite
 Summary:	SQLite backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	sqlite-devel
+%global backends %{backends} gsqlite3
 
+%ifarch %{ix86} x86_64
 %package	backend-mongodb
 Summary:	MongoDB backend for %{name}
 Group:		System Environment/Daemons
 Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	mongodb-devel
+%global backends %{backends} mongodb
+%endif
 
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
@@ -85,8 +96,10 @@ This package contains the ldap backend for %{name}
 %description	backend-sqlite
 This package contains the SQLite backend for %{name}
 
+%ifarch %{ix86} x86_64
 %description	backend-mongodb
 This package contains the MongoDB backend for %{name}
+%endif
 
 
 %prep
@@ -103,7 +116,7 @@ export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
 	--disable-static \
 	--with-modules='' \
 	--with-lua \
-	--with-dynmodules='pipe gmysql gpgsql geo ldap gsqlite3 mongodb' \
+	--with-dynmodules='%{backends}' \
 	--enable-cryptopp
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -216,12 +229,17 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libgsqlite3backend.so
 
+%ifarch %{ix86} x86_64
 %files backend-mongodb
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libmongodbbackend.so
+%endif
 
 
 %changelog
+* Sun Aug 07 2011 Dan Horák <dan@danny.cz> - 3.0-7
+- mongodb supports only x86
+
 * Mon Jul 25 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-6
 - Upstream released new version
 
