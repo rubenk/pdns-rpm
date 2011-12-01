@@ -3,7 +3,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0
-Release:	7%{?dist}
+Release:	8%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -237,6 +237,9 @@ fi
 
 
 %changelog
+* Thu Dec 01 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-8
+- Rebuilt for new boost
+
 * Sun Aug 07 2011 Dan Horák <dan@danny.cz> - 3.0-7
 - mongodb supports only x86
 
