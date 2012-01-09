@@ -1,7 +1,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.22
-Release:	10%{?dist}
+Version:	2.9.22.5
+Release:	1%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -9,9 +9,8 @@ URL:		http://powerdns.com
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Patch0:		%{name}-fixinit.patch
-Patch1:		%{name}-gcc44.patch
-Patch2:		pdns-fix-postgres-detection.patch
-Patch3:		pdns-fix-crash-on-sigstop.patch
+Patch1:		pdns-fix-postgres-detection.patch
+Patch2:		pdns-fix-crash-on-sigstop.patch
 
 Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun):	/sbin/service, /sbin/chkconfig
@@ -83,9 +82,8 @@ This package contains the SQLite backend for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .fixinit
-%patch1 -p1 -b .gcc44
-%patch2 -p1 -b .postgres
-%patch3 -p1 -b .sigstop
+%patch1 -p1 -b .postgres
+%patch2 -p1 -b .sigstop
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -184,6 +182,9 @@ fi
 
 
 %changelog
+* Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22.5-1
+- CVE-2012-0206
+
 * Tue Dec 14 2010 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22-10
 - Fix crash on SIGSTOP and SIGCONT, thanks to Anders Kaseorg (#652841)
 
