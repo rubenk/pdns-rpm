@@ -2,21 +2,21 @@
 
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	3.0
-Release:	8%{?dist}
+Version:	3.0.1
+Release:	1%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
+Source0:	ftp://training.powerdns.com/CVE-2004-0789/%{name}-%{version}.tar.gz
 Source1:	pdns.service
 Patch0:		pdns-fix-mongo-backend.patch
 Patch1:		pdns-fix-lua-detection.patch
 
 Requires(pre):	shadow-utils
 Requires(post):	systemd-units, systemd-sysv
-Requires(preun): systemd-units
-Requires(postun): systemd-units
+Requires(preun):	systemd-units
+Requires(postun):	systemd-units
 
 BuildRequires:	boost-devel, chrpath, lua-devel, cryptopp-devel, systemd-units
 Provides:	powerdns = %{version}-%{release}
@@ -237,6 +237,9 @@ fi
 
 
 %changelog
+* Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com 3.0.1-1
+- CVE-2012-0206
+
 * Thu Dec 01 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-8
 - Rebuilt for new boost
 
