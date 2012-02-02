@@ -1,6 +1,6 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	2.9.22.5
+Version:	2.9.22.6
 Release:	1%{?dist}
 
 Group:		System Environment/Daemons
@@ -182,6 +182,9 @@ fi
 
 
 %changelog
+* Wed Feb 01 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22.6-1
+- Upstream released new version. Fixes crash introduced in 2.9.22.5
+
 * Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22.5-1
 - CVE-2012-0206
 
