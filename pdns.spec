@@ -3,7 +3,7 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.0.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
@@ -237,6 +237,9 @@ fi
 
 
 %changelog
+* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-2
+- Rebuilt for c++ ABI breakage
+
 * Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com 3.0.1-1
 - CVE-2012-0206
 
