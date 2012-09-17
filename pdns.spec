@@ -2,16 +2,14 @@
 
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
-Version:	3.0.1
-Release:	3%{?dist}
+Version:	3.1
+Release:	1%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
-Source0:	ftp://training.powerdns.com/CVE-2004-0789/%{name}-%{version}.tar.gz
+Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1:	pdns.service
-Patch0:		pdns-fix-mongo-backend.patch
-Patch1:		pdns-fix-lua-detection.patch
 
 Requires(pre):	shadow-utils
 Requires(post):	systemd-units, systemd-sysv
@@ -67,15 +65,6 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	sqlite-devel
 %global backends %{backends} gsqlite3
 
-%ifarch %{ix86} x86_64
-%package	backend-mongodb
-Summary:	MongoDB backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	mongodb-devel
-%global backends %{backends} mongodb
-%endif
-
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
 
@@ -96,16 +85,9 @@ This package contains the ldap backend for %{name}
 %description	backend-sqlite
 This package contains the SQLite backend for %{name}
 
-%ifarch %{ix86} x86_64
-%description	backend-mongodb
-This package contains the MongoDB backend for %{name}
-%endif
-
 
 %prep
 %setup -q
-%patch0 -p1 -b .fixmongo
-%patch1 -p1 -b .fixlua
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -229,25 +211,14 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libgsqlite3backend.so
 
-%ifarch %{ix86} x86_64
-%files backend-mongodb
-%defattr(-,root,root,-)
-%{_libdir}/%{name}/libmongodbbackend.so
-%endif
-
 
 %changelog
-* Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+* Mon Sep 17 2012 Morten Stevens <mstevens@imt-systems.com> 3.1-1
+- Update to 3.1
+- Remove MongoDB backend due build problems
 
-* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-2
-- Rebuilt for c++ ABI breakage
-
-* Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com 3.0.1-1
+* Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0.1-1
 - CVE-2012-0206
-
-* Thu Dec 01 2011 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0-8
-- Rebuilt for new boost
 
 * Sun Aug 07 2011 Dan Horák <dan@danny.cz> - 3.0-7
 - mongodb supports only x86
@@ -363,4 +334,5 @@ fi
 - Subpackages now require %%{version}-%%{release}
 * Sat Dec 16 2006 <ruben@rubenkerkhof.com> 2.9.20-1
 - Initial import
+
 
