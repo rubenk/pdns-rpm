@@ -213,7 +213,7 @@ fi
 
 
 %changelog
-* Mon Sep 17 2012 Morten Stevens <mstevens@imt-systems.com> 3.1-1
+* Mon Sep 17 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-1
 - Update to 3.1
 - Remove MongoDB backend due build problems
 
