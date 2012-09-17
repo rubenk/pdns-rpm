@@ -217,6 +217,12 @@ fi
 - Update to 3.1
 - Remove MongoDB backend due build problems
 
+* Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.0.1-2
+- Rebuilt for c++ ABI breakage
+
 * Mon Jan 09 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> 3.0.1-1
 - CVE-2012-0206
 
