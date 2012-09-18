@@ -3,13 +3,15 @@
 Summary:	A modern, advanced and high performance authoritative-only nameserver
 Name:		pdns
 Version:	3.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 
 Group:		System Environment/Daemons
 License:	GPLv2
 URL:		http://powerdns.com
 Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1:	pdns.service
+Patch0:		pdns-mongodb-fix1.patch
+Patch1:		pdns-mongodb-fix2.patch
 
 Requires(pre):	shadow-utils
 Requires(post):	systemd-units, systemd-sysv
@@ -65,6 +67,15 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	sqlite-devel
 %global backends %{backends} gsqlite3
 
+%ifarch %{ix86} x86_64
+%package	backend-mongodb
+Summary:	MongoDB backend for %{name}
+Group:		System Environment/Daemons
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+BuildRequires:	mongodb-devel
+%global backends %{backends} mongodb
+%endif
+
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
 
@@ -85,9 +96,16 @@ This package contains the ldap backend for %{name}
 %description	backend-sqlite
 This package contains the SQLite backend for %{name}
 
+%ifarch %{ix86} x86_64
+%description	backend-mongodb
+This package contains the MongoDB backend for %{name}
+%endif
+
 
 %prep
 %setup -q
+%patch0 -p1 -b .fixmongodb1
+%patch1 -p1 -b .fixmongodb2
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -211,8 +229,17 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libgsqlite3backend.so
 
+%ifarch %{ix86} x86_64
+%files backend-mongodb
+%defattr(-,root,root,-)
+%{_libdir}/%{name}/libmongodbbackend.so
+%endif
+
 
 %changelog
+* Tue Sep 18 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-2
+- Fix MongoDB backend
+
 * Mon Sep 17 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-1
 - Update to 3.1
 - Remove MongoDB backend due build problems
@@ -340,5 +367,6 @@ fi
 - Subpackages now require %%{version}-%%{release}
 * Sat Dec 16 2006 <ruben@rubenkerkhof.com> 2.9.20-1
 - Initial import
+
 
 
