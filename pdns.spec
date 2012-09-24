@@ -3,7 +3,7 @@
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
 Version: 3.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://powerdns.com
@@ -156,29 +156,14 @@ getent passwd pdns >/dev/null || \
 	-c "PowerDNS user" pdns
 exit 0
 
-
 %post
-if [ $1 -eq 1 ]; then
-	# Initial installation
-	/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-fi
-
+%systemd_post pdns.service
 
 %preun
-if [ $1 -eq 0 ]; then
-	# Package removal; not upgrade
-	/bin/systemctl --no-reload disable pdns.service &>/dev/null || :
-	/bin/systemctl stop pdns.service &>/dev/null || :
-fi
-
+%systemd_preun pdns.service
 
 %postun
-/bin/systemctl daemon-reload &>/dev/null || :
-if [ $1 -ge 1 ]; then
-	# Package upgrade; not install
-	/bin/systemctl try-restart pdns.service &>/dev/null || :
-fi
-
+%systemd_postun_with_restart pdns.service
 
 %triggerun -- pdns < 3.0-rc3
 # Save the current service runlevel info
@@ -241,6 +226,9 @@ fi
 
 
 %changelog
+* Mon Sep 24 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-4
+- use new systemd rpm macros (rhbz#850266)
+
 * Mon Sep 24 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-3
 - Fix pdns daemon exit code (rhbz#859898)
 - Update systemd unit file
