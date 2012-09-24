@@ -1,6 +1,6 @@
 [Unit]
-Description=PDNS DNS Server
-After=syslog.target network.target
+Description=PowerDNS Authoritative Server
+After=network.target
 
 [Service]
 Type=forking
@@ -10,4 +10,3 @@ ExecStop=/usr/bin/pdns_control quit
 
 [Install]
 WantedBy=multi-user.target
-
