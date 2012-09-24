@@ -1,0 +1,11 @@
+--- pdns-3.1/pdns/receiver.cc.orig	2012-05-04 12:13:23.000000000 +0200
++++ pdns-3.1/pdns/receiver.cc	2012-09-22 01:19:23.081002321 +0200
+@@ -117,7 +117,7 @@ static void takedown(int i)
+   if(cpid) {
+     L<<Logger::Error<<"Guardian is killed, taking down children with us"<<endl;
+     kill(cpid,SIGKILL);
+-    exit(1);
++    exit(0);
+   }
+ }
+ 

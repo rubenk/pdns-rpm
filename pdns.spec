@@ -1,25 +1,28 @@
 %global backends %{nil}
 
-Summary:	A modern, advanced and high performance authoritative-only nameserver
-Name:		pdns
-Version:	3.1
-Release:	2%{?dist}
+Summary: A modern, advanced and high performance authoritative-only nameserver
+Name: pdns
+Version: 3.1
+Release: 3%{?dist}
+License: GPLv2
+Group: System Environment/Daemons
+URL: http://powerdns.com
+Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
+Source1: pdns.service
 
-Group:		System Environment/Daemons
-License:	GPLv2
-URL:		http://powerdns.com
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
-Source1:	pdns.service
-Patch0:		pdns-mongodb-fix1.patch
-Patch1:		pdns-mongodb-fix2.patch
+# Patches
 
-Requires(pre):	shadow-utils
-Requires(post):	systemd-units, systemd-sysv
-Requires(preun):	systemd-units
-Requires(postun):	systemd-units
+Patch0: pdns-mongodb-fix1.patch
+Patch1: pdns-mongodb-fix2.patch
+Patch2: pdns-return-exit0.patch
 
-BuildRequires:	boost-devel, chrpath, lua-devel, cryptopp-devel, systemd-units
-Provides:	powerdns = %{version}-%{release}
+Requires(pre): shadow-utils
+Requires(post): systemd-units, systemd-sysv
+Requires(preun): systemd-units
+Requires(postun): systemd-units
+
+BuildRequires: boost-devel, chrpath, lua-devel, cryptopp-devel, systemd-units
+Provides: powerdns = %{version}-%{release}
 
 %description
 The PowerDNS Nameserver is a modern, advanced and high performance
@@ -106,6 +109,7 @@ This package contains the MongoDB backend for %{name}
 %setup -q
 %patch0 -p1 -b .fixmongodb1
 %patch1 -p1 -b .fixmongodb2
+%patch2 -p1 -b .return-exit0
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -237,6 +241,10 @@ fi
 
 
 %changelog
+* Mon Sep 24 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-3
+- Fix pdns daemon exit code (rhbz#859898)
+- Update systemd unit file
+
 * Tue Sep 18 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-2
 - Fix MongoDB backend
 
@@ -367,6 +375,3 @@ fi
 - Subpackages now require %%{version}-%%{release}
 * Sat Dec 16 2006 <ruben@rubenkerkhof.com> 2.9.20-1
 - Initial import
-
-
-
