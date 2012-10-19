@@ -3,7 +3,7 @@
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
 Version: 3.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://powerdns.com
@@ -12,16 +12,22 @@ Source1: pdns.service
 
 # Patches
 
-Patch0: pdns-mongodb-fix1.patch
-Patch1: pdns-mongodb-fix2.patch
-Patch2: pdns-return-exit0.patch
+Patch0: pdns-default-config.patch
+Patch1: pdns-mongodb-fix1.patch
+Patch2: pdns-mongodb-fix2.patch
+Patch3: pdns-return-exit0.patch
 
 Requires(pre): shadow-utils
-Requires(post): systemd-units, systemd-sysv
+Requires(post): systemd-sysv
+Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
 
-BuildRequires: boost-devel, chrpath, lua-devel, cryptopp-devel, systemd-units
+BuildRequires: chrpath
+BuildRequires: systemd-units
+BuildRequires: boost-devel
+BuildRequires: lua-devel
+BuildRequires: cryptopp-devel
 Provides: powerdns = %{version}-%{release}
 
 %description
@@ -107,9 +113,10 @@ This package contains the MongoDB backend for %{name}
 
 %prep
 %setup -q
-%patch0 -p1 -b .fixmongodb1
-%patch1 -p1 -b .fixmongodb2
-%patch2 -p1 -b .return-exit0
+%patch0 -p1 -b .default-config-patch
+%patch1 -p1 -b .fixmongodb1
+%patch2 -p1 -b .fixmongodb2
+%patch3 -p1 -b .return-exit0
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -134,9 +141,7 @@ make install DESTDIR=%{buildroot}
 %{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
 %{__mv} %{buildroot}%{_sysconfdir}/%{name}/pdns.conf{-dist,}
 
-# add the pdns user to the config file
-sed -i '1i\setuid=pdns' %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
-sed -i '2i\setgid=pdns' %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
+chmod 600 %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
 
 # strip the static rpath from the binaries
 chrpath --delete %{buildroot}%{_bindir}/pdns_control
@@ -226,6 +231,10 @@ exit 0
 
 
 %changelog
+* Fri Oct 19 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-5
+- Fixed permissions of pdns.conf file (rhbz#646510)
+- Set bind as default backend
+
 * Mon Sep 24 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-4
 - use new systemd rpm macros (rhbz#850266)
 
