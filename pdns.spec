@@ -1,22 +1,26 @@
-Summary:	A modern, advanced and high performance authoritative-only nameserver
-Name:		pdns
-Version:	2.9.22.6
-Release:	1%{?dist}
+Summary: A modern, advanced and high performance authoritative-only nameserver
+Name: pdns
+Version: 2.9.22.6
+Release: 2%{?dist}
+License: GPLv2
+Group: System Environment/Daemons
+URL: http://powerdns.com
+Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 
-Group:		System Environment/Daemons
-License:	GPLv2
-URL:		http://powerdns.com
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Source0:	http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
-Patch0:		%{name}-fixinit.patch
-Patch1:		pdns-fix-postgres-detection.patch
-Patch2:		pdns-fix-crash-on-sigstop.patch
+# Patches
 
-Requires(post):	%{_sbindir}/useradd, /sbin/chkconfig
-Requires(preun):	/sbin/service, /sbin/chkconfig
+Patch0: pdns-default-config.patch
+Patch1: pdns-fixinit.patch
+Patch2: pdns-fix-postgres-detection.patch
+Patch3: pdns-fix-crash-on-sigstop.patch
 
-BuildRequires:	boost-devel, chrpath
-Provides:	powerdns = %{version}-%{release}
+Requires(post): %{_sbindir}/useradd, /sbin/chkconfig
+Requires(preun): /sbin/service, /sbin/chkconfig
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires: boost-devel
+BuildRequires: chrpath
+Provides: powerdns = %{version}-%{release}
 
 %description
 The PowerDNS Nameserver is a modern, advanced and high performance
@@ -81,9 +85,10 @@ This package contains the SQLite backend for %{name}
 
 %prep
 %setup -q
-%patch0 -p1 -b .fixinit
-%patch1 -p1 -b .postgres
-%patch2 -p1 -b .sigstop
+%patch0 -p1 -b .default-config-patch
+%patch1 -p1 -b .fixinit
+%patch2 -p1 -b .postgres
+%patch3 -p1 -b .sigstop
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -107,9 +112,7 @@ make install DESTDIR=%{buildroot}
 %{__install} -p -D -m 0755 pdns/pdns %{buildroot}%{_initrddir}/pdns
 %{__mv} %{buildroot}%{_sysconfdir}/%{name}/pdns.conf{-dist,}
 
-# add the pdns user to the config file
-sed -i '1i\setuid=pdns' %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
-sed -i '2i\setgid=pdns' %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
+chmod 600 %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
 
 # strip the static rpath from the binaries
 chrpath --delete %{buildroot}%{_bindir}/pdns_control
@@ -182,6 +185,10 @@ fi
 
 
 %changelog
+* Sat Oct 20 2012 Morten Stevens <mstevens@imt-systems.com> - 2.9.22.6-2
+- Fixed permissions of pdns.conf file (rhbz#646510)
+- Set bind as default backend
+
 * Wed Feb 01 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.22.6-1
 - Upstream released new version. Fixes crash introduced in 2.9.22.5
 
@@ -266,4 +273,3 @@ fi
 - Subpackages now require %%{version}-%%{release}
 * Sat Dec 16 2006 <ruben@rubenkerkhof.com> 2.9.20-1
 - Initial import
-
