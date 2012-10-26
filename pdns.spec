@@ -1,7 +1,9 @@
+%global backends %{nil}
+
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
-Version: 2.9.22.6
-Release: 2%{?dist}
+Version: 3.1
+Release: 1%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://powerdns.com
@@ -11,15 +13,16 @@ Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 
 Patch0: pdns-default-config.patch
 Patch1: pdns-fixinit.patch
-Patch2: pdns-fix-postgres-detection.patch
-Patch3: pdns-fix-crash-on-sigstop.patch
 
 Requires(post): %{_sbindir}/useradd, /sbin/chkconfig
 Requires(preun): /sbin/service, /sbin/chkconfig
+Requires(postun): /sbin/service
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: boost-devel
 BuildRequires: chrpath
+BuildRequires: boost-devel
+BuildRequires: lua-devel
+BuildRequires: cryptopp-devel
 Provides: powerdns = %{version}-%{release}
 
 %description
@@ -31,36 +34,42 @@ Furthermore, PowerDNS interfaces with almost any database.
 %package	backend-mysql
 Summary:	MySQL backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	mysql-devel
+%global backends %{backends} gmysql
 
 %package	backend-postgresql
 Summary:	PostgreSQL backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	postgresql-devel
+%global backends %{backends} gpgsql
 
 %package	backend-pipe
 Summary:	Pipe backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} pipe
 
 %package	backend-geo
 Summary:	Geo backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} geo
 
 %package	backend-ldap
 Summary:	LDAP backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	openldap-devel
+%global backends %{backends} ldap
 
 %package	backend-sqlite
 Summary:	SQLite backend for %{name}
 Group:		System Environment/Daemons
-Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	sqlite-devel
+%global backends %{backends} gsqlite3
 
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
@@ -87,8 +96,6 @@ This package contains the SQLite backend for %{name}
 %setup -q
 %patch0 -p1 -b .default-config-patch
 %patch1 -p1 -b .fixinit
-%patch2 -p1 -b .postgres
-%patch3 -p1 -b .sigstop
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -98,14 +105,16 @@ export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
 	--libdir=%{_libdir}/%{name} \
 	--disable-static \
 	--with-modules='' \
-	--with-dynmodules='pipe gmysql gpgsql geo ldap gsqlite3' \
-	--with-mysql-lib=%{_libdir}/mysql \
-	--with-sqlite3-lib=%{_libdir}
+	--with-lua \
+	--with-dynmodules='%{backends}' \
+	--enable-cryptopp
+
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 make %{?_smp_mflags}
 
 %install
-%{__rm} -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 %{__rm} -f %{buildroot}%{_libdir}/%{name}/*.la
@@ -129,10 +138,16 @@ if [ $1 -eq 1 ]; then
 		%{_sbindir}/useradd -c "PowerDNS user" -s /sbin/nologin -r -d / pdns > /dev/null || :
 	fi
 fi
+
 %preun
 if [ $1 -eq 0 ]; then
 	/sbin/service pdns stop >/dev/null 2>&1 || :
 	/sbin/chkconfig --del pdns
+fi
+
+%postun
+if [ $1 -ge 1 ]; then
+	/sbin/service pdns condrestart >/dev/null 2>&1 || :
 fi
 
 %clean
@@ -140,8 +155,10 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc ChangeLog TODO pdns/COPYING
+%doc COPYING README
+%{_bindir}/dnsreplay
 %{_bindir}/pdns_control
+%{_bindir}/pdnssec
 %{_bindir}/zone2ldap
 %{_bindir}/zone2sql
 %{_sbindir}/pdns_server
@@ -155,36 +172,37 @@ fi
 
 %files backend-mysql
 %defattr(-,root,root,-)
-%doc pdns/COPYING
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
 %defattr(-,root,root,-)
-%doc pdns/COPYING
 %{_libdir}/%{name}/libgpgsqlbackend.so
 
 %files backend-pipe
 %defattr(-,root,root,-)
-%doc pdns/COPYING
 %{_libdir}/%{name}/libpipebackend.so
 
 %files backend-geo
 %defattr(-,root,root,-)
-%doc pdns/COPYING modules/geobackend/README
+%doc modules/geobackend/README
 %{_libdir}/%{name}/libgeobackend.so
 
 %files backend-ldap
 %defattr(-,root,root,-)
-%doc pdns/COPYING
 %{_libdir}/%{name}/libldapbackend.so
 
 %files backend-sqlite
 %defattr(-,root,root,-)
-%doc pdns/COPYING
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 
 %changelog
+* Fri Oct 26 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-1
+- Update to latest upstream release 3.1
+- DNSSEC improvements
+- several bugs fixed since 2.9.22
+- Added condrestart option
+
 * Sat Oct 20 2012 Morten Stevens <mstevens@imt-systems.com> - 2.9.22.6-2
 - Fixed permissions of pdns.conf file (rhbz#646510)
 - Set bind as default backend

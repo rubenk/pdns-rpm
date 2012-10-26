@@ -1,7 +1,15 @@
-diff -up pdns-2.9.22-rc2/pdns/pdns.in.fixinit pdns-2.9.22-rc2/pdns/pdns.in
---- pdns-2.9.22-rc2/pdns/pdns.in.fixinit	2008-02-03 13:14:00.000000000 +0100
-+++ pdns-2.9.22-rc2/pdns/pdns.in	2008-12-03 04:07:26.000000000 +0100
-@@ -47,6 +47,7 @@ case "$1" in
+--- pdns-3.1/pdns/pdns.in.orig	2012-05-04 12:13:23.000000000 +0200
++++ pdns-3.1/pdns/pdns.in	2012-10-26 17:25:09.000000000 +0200
+@@ -8,7 +8,7 @@
+ # Required-Stop:     $remote_fs $network $syslog
+ # Should-Start:      $all
+ # Should-Stop:       $all
+-# Default-Start:     2 3 4 5
++# Default-Start:     
+ # Default-Stop:      0 1 6
+ # Short-Description: Start/stop PowerDNS authoritative server
+ # Description:       Start/stop PowerDNS authoritative server
+@@ -62,6 +62,7 @@ case "$1" in
  		if test "$NOTRUNNING" = "0" 
  		then 
  			doPC quit
@@ -9,7 +17,7 @@ diff -up pdns-2.9.22-rc2/pdns/pdns.in.fixinit pdns-2.9.22-rc2/pdns/pdns.in
  			echo $ret
  		else
  			echo "not running"
-@@ -57,6 +58,7 @@ case "$1" in
+@@ -72,6 +73,7 @@ case "$1" in
  	force-stop)
  		echo -n "Stopping PowerDNS authoritative nameserver: "
  		killall -v -9 pdns_server
@@ -17,11 +25,35 @@ diff -up pdns-2.9.22-rc2/pdns/pdns.in.fixinit pdns-2.9.22-rc2/pdns/pdns.in
  		echo "killed"
  	;;
  
-@@ -69,6 +71,7 @@ case "$1" in
- 			$pdns_server --daemon --guardian=yes
- 			if test "$?" = "0"
+@@ -83,11 +85,22 @@ case "$1" in
+ 		else
+ 			if $pdns_server --daemon --guardian=yes
  			then
 +				touch /var/lock/subsys/pdns
  				echo "started"	
  			fi
  		fi 
+ 	;;		
+ 
++	condrestart)
++		if [ -f /var/lock/subsys/pdns ]; 
++		then
++			echo "running, restarting"
++		$0 restart
++		else
++			echo "not running"
++		fi
++	;;
++
+ 	force-reload | restart)
+ 		echo -n "Restarting PowerDNS authoritative nameserver: "
+ 		if test "$NOTRUNNING" = "1" 
+@@ -190,7 +203,7 @@ case "$1" in
+ 
+ 
+ 	*)
+-	echo pdns [start\|stop\|force-reload\|reload\|restart\|status\|dump\|show\|mrtg\|cricket\|monitor]
++	echo pdns [start\|stop\|condrestart\|force-reload\|reload\|restart\|status\|dump\|show\|mrtg\|cricket\|monitor]
+ 
+ 	;;
+ esac
