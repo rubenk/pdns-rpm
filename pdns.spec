@@ -3,18 +3,16 @@
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
 Version: 3.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://powerdns.com
 Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
-
-# Patches
-
 Patch0: pdns-default-config.patch
 Patch1: pdns-fixinit.patch
 
-Requires(post): %{_sbindir}/useradd, /sbin/chkconfig
+Requires(pre): shadow-utils
+Requires(post): /sbin/chkconfig
 Requires(preun): /sbin/service, /sbin/chkconfig
 Requires(postun): /sbin/service
 
@@ -130,14 +128,15 @@ chrpath --delete %{buildroot}%{_bindir}/zone2sql
 chrpath --delete %{buildroot}%{_sbindir}/pdns_server
 chrpath --delete %{buildroot}%{_libdir}/%{name}/*.so
 
+%pre
+getent group pdns >/dev/null || groupadd -r pdns
+getent passwd pdns >/dev/null || \
+	useradd -r -g pdns -d / -s /sbin/nologin \
+	-c "PowerDNS user" pdns
+exit 0
+
 %post
-if [ $1 -eq 1 ]; then
-	/sbin/chkconfig --add pdns
-	userid=`id -u pdns 2>/dev/null`
-	if [ x"$userid" = x ]; then
-		%{_sbindir}/useradd -c "PowerDNS user" -s /sbin/nologin -r -d / pdns > /dev/null || :
-	fi
-fi
+/sbin/chkconfig --add pdns
 
 %preun
 if [ $1 -eq 0 ]; then
@@ -197,6 +196,9 @@ fi
 
 
 %changelog
+* Sun Oct 28 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-2
+- Spec improvements
+
 * Fri Oct 26 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-1
 - Update to latest upstream release 3.1
 - DNSSEC improvements
