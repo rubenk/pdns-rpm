@@ -3,7 +3,7 @@
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
 Version: 3.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://powerdns.com
@@ -200,11 +200,15 @@ exit 0
 
 %files backend-mysql
 %defattr(-,root,root,-)
+%doc pdns/dnssec.schema.mysql.sql
+%doc pdns/no-dnssec.schema.mysql.sql
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libgpgsqlbackend.so
+%doc pdns/dnssec.schema.pgsql.sql
+%doc pdns/no-dnssec.schema.pgsql.sql
 
 %files backend-pipe
 %defattr(-,root,root,-)
@@ -222,6 +226,9 @@ exit 0
 %files backend-sqlite
 %defattr(-,root,root,-)
 %{_libdir}/%{name}/libgsqlite3backend.so
+%doc pdns/dnssec.schema.sqlite3.sql
+%doc pdns/no-dnssec.schema.sqlite3.sql
+%doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %ifarch %{ix86} x86_64
 %files backend-mongodb
@@ -231,6 +238,9 @@ exit 0
 
 
 %changelog
+* Thu Nov 22 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> - 3.1-6
+- Add example schemas to documentation
+
 * Fri Oct 19 2012 Morten Stevens <mstevens@imt-systems.com> - 3.1-5
 - Fixed permissions of pdns.conf file (rhbz#646510)
 - Set bind as default backend
