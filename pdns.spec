@@ -3,19 +3,14 @@
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
 Version: 3.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 License: GPLv2
 Group: System Environment/Daemons
 URL: http://powerdns.com
 Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1: pdns.service
-
-# Patches
-
 Patch0: pdns-default-config.patch
-Patch1: pdns-mongodb-fix1.patch
-Patch2: pdns-mongodb-fix2.patch
-Patch3: pdns-return-exit0.patch
+Patch1: pdns-return-exit0.patch
 
 Requires(pre): shadow-utils
 Requires(post): systemd-sysv
@@ -76,15 +71,6 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 BuildRequires:	sqlite-devel
 %global backends %{backends} gsqlite3
 
-%ifarch %{ix86} x86_64
-%package	backend-mongodb
-Summary:	MongoDB backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	mongodb-devel
-%global backends %{backends} mongodb
-%endif
-
 %description	backend-mysql
 This package contains the gmysql backend for %{name}
 
@@ -105,18 +91,10 @@ This package contains the ldap backend for %{name}
 %description	backend-sqlite
 This package contains the SQLite backend for %{name}
 
-%ifarch %{ix86} x86_64
-%description	backend-mongodb
-This package contains the MongoDB backend for %{name}
-%endif
-
-
 %prep
 %setup -q
 %patch0 -p1 -b .default-config-patch
-%patch1 -p1 -b .fixmongodb1
-%patch2 -p1 -b .fixmongodb2
-%patch3 -p1 -b .return-exit0
+%patch1 -p1 -b .return-exit0
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -153,7 +131,6 @@ chrpath --delete %{buildroot}%{_libdir}/%{name}/*.so
 # Copy systemd service file
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/pdns.service
 
-
 %pre
 getent group pdns >/dev/null || groupadd -r pdns
 getent passwd pdns >/dev/null || \
@@ -179,7 +156,6 @@ exit 0
 # Run these because the SysV package being removed won't do them
 /sbin/chkconfig --del pdns &>/dev/null || :
 /bin/systemctl try-restart pdns.service &>/dev/null || :
-
 
 %files
 %defattr(-,root,root,-)
@@ -230,14 +206,11 @@ exit 0
 %doc pdns/no-dnssec.schema.sqlite3.sql
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
-%ifarch %{ix86} x86_64
-%files backend-mongodb
-%defattr(-,root,root,-)
-%{_libdir}/%{name}/libmongodbbackend.so
-%endif
-
-
 %changelog
+* Mon Jan 07 2013 Morten Stevens <mstevens@imt-systems.com> - 3.1-7
+- Disable pdns guardian by default (rhbz#883852)
+- Drop backend MongoDB as it does not work (upstream commit 3017)
+
 * Thu Nov 22 2012 Ruben Kerkhof <ruben@rubenkerkhof.com> - 3.1-6
 - Add example schemas to documentation
 
