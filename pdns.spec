@@ -1,16 +1,15 @@
 %global backends %{nil}
 
-Summary: A modern, advanced and high performance authoritative-only nameserver
 Name: pdns
-Version: 3.1
-Release: 7%{?dist}
-License: GPLv2
+Version: 3.2
+Release: 1%{?dist}
+Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
+License: GPLv2
 URL: http://powerdns.com
 Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1: pdns.service
 Patch0: pdns-default-config.patch
-Patch1: pdns-return-exit0.patch
 
 Requires(pre): shadow-utils
 Requires(post): systemd-sysv
@@ -18,7 +17,6 @@ Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
 
-BuildRequires: chrpath
 BuildRequires: systemd-units
 BuildRequires: boost-devel
 BuildRequires: lua-devel
@@ -94,7 +92,6 @@ This package contains the SQLite backend for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .default-config-patch
-%patch1 -p1 -b .return-exit0
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
@@ -120,13 +117,6 @@ make install DESTDIR=%{buildroot}
 %{__mv} %{buildroot}%{_sysconfdir}/%{name}/pdns.conf{-dist,}
 
 chmod 600 %{buildroot}%{_sysconfdir}/%{name}/pdns.conf
-
-# strip the static rpath from the binaries
-chrpath --delete %{buildroot}%{_bindir}/pdns_control
-chrpath --delete %{buildroot}%{_bindir}/zone2ldap
-chrpath --delete %{buildroot}%{_bindir}/zone2sql
-chrpath --delete %{buildroot}%{_sbindir}/pdns_server
-chrpath --delete %{buildroot}%{_libdir}/%{name}/*.so
 
 # Copy systemd service file
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_unitdir}/pdns.service
@@ -165,6 +155,7 @@ exit 0
 %{_bindir}/pdnssec
 %{_bindir}/zone2ldap
 %{_bindir}/zone2sql
+%{_bindir}/zone2json
 %{_sbindir}/pdns_server
 %{_mandir}/man8/pdns_control.8.gz
 %{_mandir}/man8/pdns_server.8.gz
@@ -207,6 +198,9 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Thu Jan 17 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-1
+- Update to 3.2
+
 * Mon Jan 07 2013 Morten Stevens <mstevens@imt-systems.com> - 3.1-7
 - Disable pdns guardian by default (rhbz#883852)
 - Drop backend MongoDB as it does not work (upstream commit 3017)
