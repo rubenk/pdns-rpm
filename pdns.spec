@@ -2,7 +2,7 @@
 
 Name: pdns
 Version: 3.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -198,6 +198,9 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Sat Feb 09 2013 Denis Arnaud <denis.arnaud_fedora@m4x.org> - 3.2-2
+- Rebuild for Boost-1.53.0
+
 * Thu Jan 17 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-1
 - Update to 3.2
 
