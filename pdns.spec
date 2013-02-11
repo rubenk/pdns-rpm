@@ -2,7 +2,7 @@
 
 Name: pdns
 Version: 3.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -198,6 +198,10 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Mon Feb 11 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> - 3.2-4
+- Enable PrivateTmp as per http://fedoraproject.org/wiki/Features/ServicesPrivateTmp
+- Fix bogus date in changelog
+
 * Sun Feb 10 2013 Denis Arnaud <denis.arnaud_fedora@m4x.org> - 3.2-3
 - Rebuild for Boost-1.53.0
 
@@ -332,7 +336,7 @@ exit 0
 * Tue Apr 24 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-1
 - Upstream released 2.9.21
 - Enabled new SQLite backend
-* Thu Apr 10 2007 <ruben@rubenkerkhof.com> 2.9.20-9
+* Tue Apr 10 2007 <ruben@rubenkerkhof.com> 2.9.20-9
 - Add Requires for chkconfig, service and useradd (#235582)
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-8
 - Add the pdns user and group to the config file
