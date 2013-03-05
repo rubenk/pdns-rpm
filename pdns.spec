@@ -1,8 +1,9 @@
+%global _hardened_build 1
 %global backends %{nil}
 
 Name: pdns
 Version: 3.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -94,7 +95,7 @@ This package contains the SQLite backend for %{name}
 %patch0 -p1 -b .default-config-patch
 
 %build
-export CPPFLAGS="-DLDAP_DEPRECATED %{optflags}"
+export CPPFLAGS="-DLDAP_DEPRECATED"
 
 %configure \
 	--sysconfdir=%{_sysconfdir}/%{name} \
@@ -198,6 +199,9 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Tue Mar 05 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> - 3.2-5
+- Enable hardened build as per http://fedoraproject.org/wiki/Packaging:Guidelines#PIE
+
 * Mon Feb 11 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> - 3.2-4
 - Enable PrivateTmp as per http://fedoraproject.org/wiki/Features/ServicesPrivateTmp
 - Fix bogus date in changelog
