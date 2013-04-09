@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -22,6 +22,9 @@ BuildRequires: systemd-units
 BuildRequires: boost-devel
 BuildRequires: lua-devel
 BuildRequires: cryptopp-devel
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: libtool
 Provides: powerdns = %{version}-%{release}
 
 %description
@@ -95,6 +98,7 @@ This package contains the SQLite backend for %{name}
 %patch0 -p1 -b .default-config-patch
 
 %build
+autoreconf -v -f -i
 export CPPFLAGS="-DLDAP_DEPRECATED"
 
 %configure \
@@ -199,6 +203,9 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Tue Apr 09 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-6
+- Add support for aarch64 (rhbz#926316)
+
 * Tue Mar 05 2013 Ruben Kerkhof <ruben@rubenkerkhof.com> - 3.2-5
 - Enable hardened build as per http://fedoraproject.org/wiki/Packaging:Guidelines#PIE
 
