@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -11,6 +11,7 @@ URL: http://powerdns.com
 Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1: pdns.service
 Patch0: pdns-default-config.patch
+Patch1: pdns-fixarm32.patch
 
 Requires(pre): shadow-utils
 Requires(post): systemd-sysv
@@ -96,6 +97,7 @@ This package contains the SQLite backend for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .default-config-patch
+%patch1 -p1 -b .pdns-fixarm32
 
 %build
 autoreconf -v -f -i
@@ -203,6 +205,9 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Mon Apr 22 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-7
+- Disarm dead code that causes gcc crashes on ARM (rhbz#954191)
+
 * Tue Apr 09 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-6
 - Add support for aarch64 (rhbz#926316)
 
