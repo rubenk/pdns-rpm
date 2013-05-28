@@ -1,17 +1,17 @@
 %global _hardened_build 1
 %global backends %{nil}
+%global prever rc1
 
 Name: pdns
-Version: 3.2
-Release: 7%{?dist}
+Version: 3.3
+Release: 0.1.%{?prever}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
 URL: http://powerdns.com
-Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
+Source0: http://downloads.powerdns.com/releases/%{name}-%{version}-%{?prever}.tar.gz
 Source1: pdns.service
 Patch0: pdns-default-config.patch
-Patch1: pdns-fixarm32.patch
 
 Requires(pre): shadow-utils
 Requires(post): systemd-sysv
@@ -26,6 +26,7 @@ BuildRequires: cryptopp-devel
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: libtool
+BuildRequires: bison
 Provides: powerdns = %{version}-%{release}
 
 %description
@@ -95,9 +96,8 @@ This package contains the ldap backend for %{name}
 This package contains the SQLite backend for %{name}
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{version}-%{?prever}
 %patch0 -p1 -b .default-config-patch
-%patch1 -p1 -b .pdns-fixarm32
 
 %build
 autoreconf -v -f -i
@@ -167,6 +167,11 @@ exit 0
 %{_mandir}/man8/pdns_control.8.gz
 %{_mandir}/man8/pdns_server.8.gz
 %{_mandir}/man8/zone2sql.8.gz
+%{_mandir}/man8/zone2ldap.8.gz
+%{_mandir}/man8/dnsreplay.8.gz
+%{_mandir}/man8/dnsscope.8.gz
+%{_mandir}/man8/dnswasher.8.gz
+%{_mandir}/man8/pdnssec.8.gz
 %{_unitdir}/pdns.service
 %dir %{_libdir}/%{name}/
 %dir %{_sysconfdir}/%{name}/
@@ -205,6 +210,9 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Tue May 28 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-0.1.rc1
+- Update do 3.3-rc1
+
 * Mon Apr 22 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-7
 - Disarm dead code that causes gcc crashes on ARM (rhbz#954191)
 
