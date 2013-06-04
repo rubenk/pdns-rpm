@@ -4,7 +4,7 @@
 
 Name: pdns
 Version: 3.3
-Release: 0.1.%{?prever}%{?dist}
+Release: 0.2.%{?prever}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -155,7 +155,6 @@ exit 0
 /bin/systemctl try-restart pdns.service &>/dev/null || :
 
 %files
-%defattr(-,root,root,-)
 %doc COPYING README
 %{_bindir}/dnsreplay
 %{_bindir}/pdns_control
@@ -178,40 +177,38 @@ exit 0
 %config(noreplace) %{_sysconfdir}/%{name}/pdns.conf
 
 %files backend-mysql
-%defattr(-,root,root,-)
 %doc pdns/dnssec.schema.mysql.sql
 %doc pdns/no-dnssec.schema.mysql.sql
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
-%defattr(-,root,root,-)
 %{_libdir}/%{name}/libgpgsqlbackend.so
 %doc pdns/dnssec.schema.pgsql.sql
 %doc pdns/no-dnssec.schema.pgsql.sql
 
 %files backend-pipe
-%defattr(-,root,root,-)
 %{_libdir}/%{name}/libpipebackend.so
 
 %files backend-geo
-%defattr(-,root,root,-)
 %doc modules/geobackend/README
 %{_libdir}/%{name}/libgeobackend.so
 
 %files backend-ldap
-%defattr(-,root,root,-)
 %{_libdir}/%{name}/libldapbackend.so
 
 %files backend-sqlite
-%defattr(-,root,root,-)
 %{_libdir}/%{name}/libgsqlite3backend.so
 %doc pdns/dnssec.schema.sqlite3.sql
 %doc pdns/no-dnssec.schema.sqlite3.sql
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 
 %changelog
+* Tue Jun 04 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-0.2.rc1
+- Update systemd unit file
+- Spec cleanup
+
 * Tue May 28 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-0.1.rc1
-- Update do 3.3-rc1
+- Update to 3.3-rc1
 
 * Mon Apr 22 2013 Morten Stevens <mstevens@imt-systems.com> - 3.2-7
 - Disarm dead code that causes gcc crashes on ARM (rhbz#954191)
@@ -357,29 +354,39 @@ exit 0
 * Tue Sep 11 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-2
 - Fix license tag
 - Add README for geo backend to docs
+
 * Tue Apr 24 2007 Ruben Kerkhof <ruben@rubenkerkhof.com> 2.9.21-1
 - Upstream released 2.9.21
 - Enabled new SQLite backend
+
 * Tue Apr 10 2007 <ruben@rubenkerkhof.com> 2.9.20-9
 - Add Requires for chkconfig, service and useradd (#235582)
+
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-8
 - Add the pdns user and group to the config file
 - Don't restart pdns on an upgrade
 - Minor cleanups in scriptlets
+
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-7
 - Fixed typo in scriptlet
+
 * Mon Jan 1 2007 <ruben@rubenkerkhof.com> 2.9.20-6
 - Check if user pdns exists before adding it
+
 * Sat Dec 30 2006 <ruben@rubenkerkhof.com> 2.9.20-5
 - Strip rpath from the backends as well
+
 * Fri Dec 29 2006 <ruben@rubenkerkhof.com> 2.9.20-4
 - Disable rpath
+
 * Thu Dec 28 2006 <ruben@rubenkerkhof.com> 2.9.20-3
 - More fixes as per review #219973
+
 * Wed Dec 27 2006 <ruben@rubenkerkhof.com> 2.9.20-2
 - A few changes for FE review (bz #219973):
 - Renamed package to pdns, since that's how upstream calls it
 - Removed calls to ldconfig
 - Subpackages now require %%{version}-%%{release}
+
 * Sat Dec 16 2006 <ruben@rubenkerkhof.com> 2.9.20-1
 - Initial import
