@@ -1,10 +1,10 @@
 %global _hardened_build 1
 %global backends %{nil}
-%global prever rc1
+%global prever rc2
 
 Name: pdns
 Version: 3.3
-Release: 0.2.%{?prever}%{?dist}
+Release: 0.3.%{?prever}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -35,64 +35,72 @@ authoritative-only nameserver. It is written from scratch and conforms
 to all relevant DNS standards documents.
 Furthermore, PowerDNS interfaces with almost any database.
 
-%package	backend-mysql
-Summary:	MySQL backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	mysql-devel
+%package tools
+Summary: Extra tools for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+
+%description tools
+This package contains the extra tools for %{name}
+
+%package backend-mysql
+Summary: MySQL backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: mysql-devel
 %global backends %{backends} gmysql
 
-%package	backend-postgresql
-Summary:	PostgreSQL backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	postgresql-devel
-%global backends %{backends} gpgsql
-
-%package	backend-pipe
-Summary:	Pipe backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%global backends %{backends} pipe
-
-%package	backend-geo
-Summary:	Geo backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-%global backends %{backends} geo
-
-%package	backend-ldap
-Summary:	LDAP backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	openldap-devel
-%global backends %{backends} ldap
-
-%package	backend-sqlite
-Summary:	SQLite backend for %{name}
-Group:		System Environment/Daemons
-Requires:	%{name}%{?_isa} = %{version}-%{release}
-BuildRequires:	sqlite-devel
-%global backends %{backends} gsqlite3
-
-%description	backend-mysql
+%description backend-mysql
 This package contains the gmysql backend for %{name}
 
-%description	backend-postgresql
+%package backend-postgresql
+Summary: PostgreSQL backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: postgresql-devel
+%global backends %{backends} gpgsql
+
+%description backend-postgresql
 This package contains the gpgsql backend for %{name}
 
-%description	backend-pipe
+%package backend-pipe
+Summary: Pipe backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} pipe
+
+%description backend-pipe
 This package contains the pipe backend for %{name}
 
-%description	backend-geo
+%package backend-geo
+Summary: Geo backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} geo
+
+%description backend-geo
 This package contains the geo backend for %{name}
 It allows different answers to DNS queries coming from different
 IP address ranges or based on the geographic location
 
-%description	backend-ldap
+%package backend-ldap
+Summary: LDAP backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: openldap-devel
+%global backends %{backends} ldap
+
+%description backend-ldap
 This package contains the ldap backend for %{name}
 
-%description	backend-sqlite
+%package backend-sqlite
+Summary: SQLite backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: sqlite-devel
+%global backends %{backends} gsqlite3
+
+%description backend-sqlite
 This package contains the SQLite backend for %{name}
 
 %prep
@@ -110,7 +118,8 @@ export CPPFLAGS="-DLDAP_DEPRECATED"
 	--with-modules='' \
 	--with-lua \
 	--with-dynmodules='%{backends}' \
-	--enable-cryptopp
+	--enable-cryptopp \
+	--enable-tools
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -156,7 +165,6 @@ exit 0
 
 %files
 %doc COPYING README
-%{_bindir}/dnsreplay
 %{_bindir}/pdns_control
 %{_bindir}/pdnssec
 %{_bindir}/zone2ldap
@@ -167,14 +175,25 @@ exit 0
 %{_mandir}/man8/pdns_server.8.gz
 %{_mandir}/man8/zone2sql.8.gz
 %{_mandir}/man8/zone2ldap.8.gz
-%{_mandir}/man8/dnsreplay.8.gz
-%{_mandir}/man8/dnsscope.8.gz
-%{_mandir}/man8/dnswasher.8.gz
 %{_mandir}/man8/pdnssec.8.gz
 %{_unitdir}/pdns.service
 %dir %{_libdir}/%{name}/
 %dir %{_sysconfdir}/%{name}/
 %config(noreplace) %{_sysconfdir}/%{name}/pdns.conf
+
+%files tools
+%{_bindir}/dnsbulktest
+%{_bindir}/dnsreplay
+%{_bindir}/dnsscan
+%{_bindir}/dnsscope
+%{_bindir}/dnstcpbench
+%{_bindir}/dnswasher
+%{_bindir}/nproxy
+%{_bindir}/nsec3dig
+%{_mandir}/man8/dnsreplay.8.gz
+%{_mandir}/man8/dnsscope.8.gz
+%{_mandir}/man8/dnswasher.8.gz
+%{_mandir}/man1/dnstcpbench.1.gz
 
 %files backend-mysql
 %doc pdns/dnssec.schema.mysql.sql
@@ -182,9 +201,9 @@ exit 0
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
-%{_libdir}/%{name}/libgpgsqlbackend.so
 %doc pdns/dnssec.schema.pgsql.sql
 %doc pdns/no-dnssec.schema.pgsql.sql
+%{_libdir}/%{name}/libgpgsqlbackend.so
 
 %files backend-pipe
 %{_libdir}/%{name}/libpipebackend.so
@@ -197,12 +216,16 @@ exit 0
 %{_libdir}/%{name}/libldapbackend.so
 
 %files backend-sqlite
-%{_libdir}/%{name}/libgsqlite3backend.so
 %doc pdns/dnssec.schema.sqlite3.sql
 %doc pdns/no-dnssec.schema.sqlite3.sql
 %doc pdns/bind-dnssec.schema.sqlite3.sql
+%{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Fri Jun 28 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-0.3.rc2
+- Update to 3.3-rc2
+- Add extra tools package for pdns
+
 * Tue Jun 04 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-0.2.rc1
 - Update systemd unit file
 - Spec cleanup
