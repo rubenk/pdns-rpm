@@ -1,15 +1,14 @@
 %global _hardened_build 1
 %global backends %{nil}
-%global prever rc2
 
 Name: pdns
 Version: 3.3
-Release: 0.3.%{?prever}%{?dist}
+Release: 1%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
 URL: http://powerdns.com
-Source0: http://downloads.powerdns.com/releases/%{name}-%{version}-%{?prever}.tar.gz
+Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1: pdns.service
 Patch0: pdns-default-config.patch
 
@@ -38,7 +37,6 @@ Furthermore, PowerDNS interfaces with almost any database.
 %package tools
 Summary: Extra tools for %{name}
 Group: System Environment/Daemons
-Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description tools
 This package contains the extra tools for %{name}
@@ -104,7 +102,7 @@ BuildRequires: sqlite-devel
 This package contains the SQLite backend for %{name}
 
 %prep
-%setup -q -n %{name}-%{version}-%{?prever}
+%setup -q
 %patch0 -p1 -b .default-config-patch
 
 %build
@@ -222,6 +220,9 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Fri Jul 05 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-1
+- Update to 3.3
+
 * Fri Jun 28 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-0.3.rc2
 - Update to 3.3-rc2
 - Add extra tools package for pdns
