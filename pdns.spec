@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -220,6 +220,9 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Sat Jul 27 2013 pmachata@redhat.com - 3.3-2
+- Rebuild for boost 1.54.0
+
 * Fri Jul 05 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-1
 - Update to 3.3
 
