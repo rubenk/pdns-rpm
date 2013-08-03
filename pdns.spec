@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -220,6 +220,9 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Sat Jul 27 2013 pmachata@redhat.com - 3.3-2
 - Rebuild for boost 1.54.0
 
