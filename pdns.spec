@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -69,6 +69,15 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description backend-pipe
 This package contains the pipe backend for %{name}
+
+%package backend-remote
+Summary: Remote backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} remote
+
+%description backend-remote
+This package contains the remote backend for %{name}
 
 %package backend-geo
 Summary: Geo backend for %{name}
@@ -206,6 +215,9 @@ exit 0
 %files backend-pipe
 %{_libdir}/%{name}/libpipebackend.so
 
+%files backend-remote
+%{_libdir}/%{name}/libremotebackend.so
+
 %files backend-geo
 %doc modules/geobackend/README
 %{_libdir}/%{name}/libgeobackend.so
@@ -220,6 +232,9 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Wed Aug 21 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-4
+- Add Remote backend
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
