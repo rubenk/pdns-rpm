@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -11,6 +11,7 @@ URL: http://powerdns.com
 Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1: pdns.service
 Patch0: pdns-default-config.patch
+Patch1: pdns-fix-backend-remote.patch
 
 Requires(pre): shadow-utils
 Requires(post): systemd-sysv
@@ -113,6 +114,7 @@ This package contains the SQLite backend for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .default-config-patch
+%patch1 -p1 -b .fix-backend-remote
 
 %build
 autoreconf -v -f -i
@@ -232,6 +234,9 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Sat Aug 31 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-5
+- Add patch to fix Remote backend
+
 * Wed Aug 21 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-4
 - Add Remote backend
 
