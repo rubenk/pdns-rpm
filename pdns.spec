@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -75,6 +75,7 @@ This package contains the pipe backend for %{name}
 Summary: Remote backend for %{name}
 Group: System Environment/Daemons
 Requires: %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: libcurl-devel
 %global backends %{backends} remote
 
 %description backend-remote
@@ -128,7 +129,8 @@ export CPPFLAGS="-DLDAP_DEPRECATED"
 	--with-lua \
 	--with-dynmodules='%{backends}' \
 	--enable-cryptopp \
-	--enable-tools
+	--enable-tools \
+	--enable-remotebackend-http
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -234,6 +236,9 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Sun Oct 13 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-6
+- Enable remotebackend-http
+
 * Sat Aug 31 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-5
 - Add patch to fix Remote backend
 
