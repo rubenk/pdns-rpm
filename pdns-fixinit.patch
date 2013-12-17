@@ -1,15 +1,15 @@
---- pdns-3.1/pdns/pdns.in.orig	2012-05-04 12:13:23.000000000 +0200
-+++ pdns-3.1/pdns/pdns.in	2012-10-26 17:25:09.000000000 +0200
+--- pdns-3.3/pdns/pdns.in.orig	2013-06-10 09:02:40.000000000 +0200
++++ pdns-3.3/pdns/pdns.in	2013-07-08 22:36:59.277997994 +0200
 @@ -8,7 +8,7 @@
  # Required-Stop:     $remote_fs $network $syslog
- # Should-Start:      $all
- # Should-Stop:       $all
+ # Should-Start:
+ # Should-Stop:
 -# Default-Start:     2 3 4 5
 +# Default-Start:     
  # Default-Stop:      0 1 6
- # Short-Description: Start/stop PowerDNS authoritative server
- # Description:       Start/stop PowerDNS authoritative server
-@@ -62,6 +62,7 @@ case "$1" in
+ # Short-Description: PowerDNS authoritative server
+ # Description:       PowerDNS authoritative server
+@@ -63,6 +63,7 @@ case "$1" in
  		if test "$NOTRUNNING" = "0" 
  		then 
  			doPC quit
@@ -17,7 +17,7 @@
  			echo $ret
  		else
  			echo "not running"
-@@ -72,6 +73,7 @@ case "$1" in
+@@ -73,6 +74,7 @@ case "$1" in
  	force-stop)
  		echo -n "Stopping PowerDNS authoritative nameserver: "
  		killall -v -9 pdns_server
@@ -25,13 +25,15 @@
  		echo "killed"
  	;;
  
-@@ -83,11 +85,22 @@ case "$1" in
+@@ -84,6 +86,7 @@ case "$1" in
  		else
  			if $pdns_server --daemon --guardian=yes
  			then
 +				touch /var/lock/subsys/pdns
  				echo "started"	
- 			fi
+ 	            	else
+ 				echo "starting failed"
+@@ -92,6 +95,16 @@ case "$1" in
  		fi 
  	;;		
  
@@ -48,7 +50,7 @@
  	force-reload | restart)
  		echo -n "Restarting PowerDNS authoritative nameserver: "
  		if test "$NOTRUNNING" = "1" 
-@@ -190,7 +203,7 @@ case "$1" in
+@@ -194,7 +207,7 @@ case "$1" in
  
  
  	*)
