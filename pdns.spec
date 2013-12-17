@@ -2,8 +2,8 @@
 %global backends %{nil}
 
 Name: pdns
-Version: 3.3
-Release: 6%{?dist}
+Version: 3.3.1
+Release: 1%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -11,7 +11,6 @@ URL: http://powerdns.com
 Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
 Source1: pdns.service
 Patch0: pdns-default-config.patch
-Patch1: pdns-fix-backend-remote.patch
 
 Requires(pre): shadow-utils
 Requires(post): systemd-sysv
@@ -23,10 +22,8 @@ BuildRequires: systemd-units
 BuildRequires: boost-devel
 BuildRequires: lua-devel
 BuildRequires: cryptopp-devel
-BuildRequires: autoconf
-BuildRequires: automake
-BuildRequires: libtool
 BuildRequires: bison
+BuildRequires: polarssl-devel
 Provides: powerdns = %{version}-%{release}
 
 %description
@@ -102,6 +99,15 @@ BuildRequires: openldap-devel
 %description backend-ldap
 This package contains the ldap backend for %{name}
 
+%package backend-lua
+Summary: LUA backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+%global backends %{backends} lua
+
+%description backend-lua
+This package contains the lua backend for %{name}
+
 %package backend-sqlite
 Summary: SQLite backend for %{name}
 Group: System Environment/Daemons
@@ -115,10 +121,11 @@ This package contains the SQLite backend for %{name}
 %prep
 %setup -q
 %patch0 -p1 -b .default-config-patch
-%patch1 -p1 -b .fix-backend-remote
+
+# No inclusion of pre-built binaries or libraries
+rm -rf pdns/ext/polarssl-*
 
 %build
-autoreconf -v -f -i
 export CPPFLAGS="-DLDAP_DEPRECATED"
 
 %configure \
@@ -126,6 +133,7 @@ export CPPFLAGS="-DLDAP_DEPRECATED"
 	--libdir=%{_libdir}/%{name} \
 	--disable-static \
 	--with-modules='' \
+        --with-system-polarssl \
 	--with-lua \
 	--with-dynmodules='%{backends}' \
 	--enable-cryptopp \
@@ -229,6 +237,9 @@ exit 0
 %files backend-ldap
 %{_libdir}/%{name}/libldapbackend.so
 
+%files backend-lua
+%{_libdir}/%{name}/libluabackend.so
+
 %files backend-sqlite
 %doc pdns/dnssec.schema.sqlite3.sql
 %doc pdns/no-dnssec.schema.sqlite3.sql
@@ -236,6 +247,11 @@ exit 0
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Tue Dec 17 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-1
+- Update to latest upstream release 3.3.1
+- Add LUA backend
+- Add polarssl-devel as build dependency
+
 * Sun Oct 13 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3-6
 - Enable remotebackend-http
 
