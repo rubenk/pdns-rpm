@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -117,6 +117,16 @@ BuildRequires: sqlite-devel
 
 %description backend-sqlite
 This package contains the SQLite backend for %{name}
+
+%package backend-opendbx
+Summary: OpenDBX backend for %{name}
+Group: System Environment/Daemons
+Requires: %{name}%{?_isa} = %{version}-%{release}
+BuildRequires: opendbx-devel
+%global backends %{backends} opendbx
+
+%description backend-opendbx
+This package contains the opendbx backend for %{name}
 
 %prep
 %setup -q
@@ -246,7 +256,13 @@ exit 0
 %doc pdns/bind-dnssec.schema.sqlite3.sql
 %{_libdir}/%{name}/libgsqlite3backend.so
 
+%files backend-opendbx
+%{_libdir}/%{name}/libopendbxbackend.so
+
 %changelog
+* Mon Mar 17 2014 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-2
+- Enable OpenDBX backend, thanks to Jean-Eudes Onfray (rhbz#1075490)
+
 * Tue Dec 17 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-1
 - Update to latest upstream release 3.3.1
 - Add LUA backend
