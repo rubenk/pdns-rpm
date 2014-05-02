@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -260,6 +260,9 @@ exit 0
 %{_libdir}/%{name}/libopendbxbackend.so
 
 %changelog
+* Fri May 02 2014 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-3
+- Rebuild for PolarSSL 1.3.6
+
 * Mon Mar 17 2014 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-2
 - Enable OpenDBX backend, thanks to Jean-Eudes Onfray (rhbz#1075490)
 
