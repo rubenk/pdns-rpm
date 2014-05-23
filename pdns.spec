@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -260,6 +260,9 @@ exit 0
 %{_libdir}/%{name}/libopendbxbackend.so
 
 %changelog
+* Fri May 23 2014 Petr Machata <pmachata@redhat.com> - 3.3.1-4
+- Rebuild for boost 1.55.0
+
 * Fri May 02 2014 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-3
 - Rebuild for PolarSSL 1.3.6
 
