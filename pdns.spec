@@ -3,7 +3,7 @@
 
 Name: pdns
 Version: 3.3.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -260,6 +260,9 @@ exit 0
 %{_libdir}/%{name}/libopendbxbackend.so
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.3.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Fri May 23 2014 Petr Machata <pmachata@redhat.com> - 3.3.1-4
 - Rebuild for boost 1.55.0
 
