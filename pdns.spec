@@ -134,7 +134,6 @@ sed -i 's/^# setgid=/setgid=pdns/' pdns/pdns.conf-dist
 rm -rf pdns/ext/polarssl-*
 
 %build
-export CPPFLAGS="-DLDAP_DEPRECATED"
 ./bootstrap
 %configure \
 	--sysconfdir=%{_sysconfdir}/%{name} \
