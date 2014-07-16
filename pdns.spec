@@ -1,10 +1,10 @@
 %global backends %{nil}
-%global commit de6d565b6f2ad4872fc97ade000b43357492ba25
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
+%global commit 10df2060f06bbd06646beb38a583c7db18f1d725
+%global shortcommit %(c=%{commit}; echo ${c:0:12})
 
 Name: pdns
 Version: 3.4.0
-Release: 0.2.%{shortcommit}%{?dist}
+Release: 0.3.%{shortcommit}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -138,7 +138,6 @@ export CPPFLAGS="-DLDAP_DEPRECATED"
 ./bootstrap
 %configure \
 	--sysconfdir=%{_sysconfdir}/%{name} \
-	--disable-static \
 	--with-modules='' \
         --with-system-polarssl \
 	--with-lua \
@@ -148,10 +147,10 @@ export CPPFLAGS="-DLDAP_DEPRECATED"
 	--enable-remotebackend-zeromq \
 	--enable-experimental-pkcs11
 
-sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+# sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+# sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} V=1
 
 %install
 make install DESTDIR=%{buildroot}
@@ -184,7 +183,7 @@ if [ $1 -ge 1 ]; then
 fi
 
 %files
-%doc COPYING README
+%doc COPYING README.md
 %{_bindir}/pdns_control
 %{_bindir}/pdnssec
 %{_bindir}/zone2ldap
@@ -252,6 +251,12 @@ fi
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Wed Jul 16 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.3.10df2060f06b
+- Update to 10df2060f06b
+- disable-static is the default
+- run make with V=1
+- stop stripping rpath, fixed upstream
+
 * Wed Jul 16 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.2.de6d565
 - Enable zeromq remote backend
 - Enable experimental PKCS11 support
