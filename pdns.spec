@@ -123,7 +123,7 @@ This package contains the SQLite backend for %{name}
 
 %prep
 %setup -qn %{name}-%{commit}
-# % patch0 -p1 -b .default-config-patch
+%patch0 -p1 -b .default-config-patch
 %patch1 -p1 -b .fixinit
 
 # No inclusion of pre-built binaries or libraries
