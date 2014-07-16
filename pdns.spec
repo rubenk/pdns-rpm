@@ -10,8 +10,7 @@ Group: System Environment/Daemons
 License: GPLv2
 URL: http://powerdns.com
 Source0: https://github.com/Powerdns/pdns/archive/%{commit}/pdns-%{commit}.tar.gz
-Patch0: pdns-default-config.patch
-Patch1: pdns-fixinit.patch
+Patch0: pdns-fixinit.patch
 
 Requires(pre): shadow-utils
 Requires(post): /sbin/chkconfig
@@ -125,8 +124,11 @@ This package contains the SQLite backend for %{name}
 
 %prep
 %setup -qn %{name}-%{commit}
-%patch0 -p1 -b .default-config-patch
-%patch1 -p1 -b .fixinit
+%patch0 -p1 -b .fixinit
+
+sed -i 's/^# launch=/launch=bind/' pdns/pdns.conf-dist
+sed -i 's/^# setuid=/setuid=pdns/' pdns/pdns.conf-dist
+sed -i 's/^# setgid=/setgid=pdns/' pdns/pdns.conf-dist
 
 # No inclusion of pre-built binaries or libraries
 rm -rf pdns/ext/polarssl-*
