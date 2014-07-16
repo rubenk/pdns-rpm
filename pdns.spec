@@ -4,7 +4,7 @@
 
 Name: pdns
 Version: 3.4.0
-Release: 0.1.%{shortcommit}%{?dist}
+Release: 0.2.%{shortcommit}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -28,6 +28,8 @@ BuildRequires: ragel
 BuildRequires: flex
 BuildRequires: asciidoc
 BuildRequires: xmlto
+BuildRequires: p11-kit-devel
+BuildRequires: zeromq-devel
 
 %description
 The PowerDNS Nameserver is a modern, advanced and high performance
@@ -141,7 +143,8 @@ export CPPFLAGS="-DLDAP_DEPRECATED"
 	--with-dynmodules='%{backends}' \
 	--enable-cryptopp \
 	--enable-tools \
-	--enable-remotebackend-http
+	--enable-remotebackend-zeromq \
+	--enable-experimental-pkcs11
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -247,6 +250,10 @@ fi
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Wed Jul 16 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.2.de6d565
+- Enable zeromq remote backend
+- Enable experimental PKCS11 support
+
 * Tue Jul 15 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.1.de6d565
 - Upgrade to de6d565b6f2a for various
   remotebackend fixes
