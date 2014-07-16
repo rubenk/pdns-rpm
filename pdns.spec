@@ -13,9 +13,9 @@ Source0: https://github.com/Powerdns/pdns/archive/%{commit}/pdns-%{commit}.tar.g
 Patch0: pdns-fixinit.patch
 
 Requires(pre): shadow-utils
-Requires(post): /sbin/chkconfig
-Requires(preun): /sbin/service, /sbin/chkconfig
-Requires(postun): /sbin/service
+Requires(post): chkconfig
+Requires(preun): initscripts, chkconfig
+Requires(postun): initscripts
 
 BuildRequires: boost-devel
 BuildRequires: lua-devel
