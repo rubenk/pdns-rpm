@@ -1,13 +1,15 @@
 %global backends %{nil}
+%global commit de6d565b6f2ad4872fc97ade000b43357492ba25
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name: pdns
-Version: 3.3.1
-Release: 1%{?dist}
+Version: 3.4.0
+Release: 0.1.%{shortcommit}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
 URL: http://powerdns.com
-Source0: http://downloads.powerdns.com/releases/%{name}-%{version}.tar.gz
+Source0: https://github.com/Powerdns/pdns/archive/%{commit}/pdns-%{commit}.tar.gz
 Patch0: pdns-default-config.patch
 Patch1: pdns-fixinit.patch
 
@@ -21,7 +23,11 @@ BuildRequires: lua-devel
 BuildRequires: cryptopp-devel
 BuildRequires: bison
 BuildRequires: polarssl-devel
-Provides: powerdns = %{version}-%{release}
+BuildRequires: libtool
+BuildRequires: ragel
+BuildRequires: flex
+BuildRequires: asciidoc
+BuildRequires: xmlto
 
 %description
 The PowerDNS Nameserver is a modern, advanced and high performance
@@ -116,8 +122,8 @@ BuildRequires: sqlite-devel
 This package contains the SQLite backend for %{name}
 
 %prep
-%setup -q
-%patch0 -p1 -b .default-config-patch
+%setup -qn %{name}-%{commit}
+# % patch0 -p1 -b .default-config-patch
 %patch1 -p1 -b .fixinit
 
 # No inclusion of pre-built binaries or libraries
@@ -125,10 +131,9 @@ rm -rf pdns/ext/polarssl-*
 
 %build
 export CPPFLAGS="-DLDAP_DEPRECATED"
-
+./bootstrap
 %configure \
 	--sysconfdir=%{_sysconfdir}/%{name} \
-	--libdir=%{_libdir}/%{name} \
 	--disable-static \
 	--with-modules='' \
         --with-system-polarssl \
@@ -193,6 +198,7 @@ fi
 
 %files tools
 %{_bindir}/dnsbulktest
+%{_bindir}/dnsdist
 %{_bindir}/dnsreplay
 %{_bindir}/dnsscan
 %{_bindir}/dnsscope
@@ -200,19 +206,22 @@ fi
 %{_bindir}/dnswasher
 %{_bindir}/nproxy
 %{_bindir}/nsec3dig
+%{_bindir}/saxfr
 %{_mandir}/man8/dnsreplay.8.gz
 %{_mandir}/man8/dnsscope.8.gz
 %{_mandir}/man8/dnswasher.8.gz
 %{_mandir}/man1/dnstcpbench.1.gz
 
 %files backend-mysql
-%doc pdns/dnssec.schema.mysql.sql
-%doc pdns/no-dnssec.schema.mysql.sql
+%doc modules/gmysqlbackend/dnssec-3.x_to_3.4.0_schema.mysql.sql
+%doc modules/gmysqlbackend/nodnssec-3.x_to_3.4.0_schema.mysql.sql
+%doc modules/gmysqlbackend/schema.mysql.sql
 %{_libdir}/%{name}/libgmysqlbackend.so
 
 %files backend-postgresql
-%doc pdns/dnssec.schema.pgsql.sql
-%doc pdns/no-dnssec.schema.pgsql.sql
+%doc modules/gpgsqlbackend/dnssec-3.x_to_3.4.0_schema.pgsql.sql
+%doc modules/gpgsqlbackend/nodnssec-3.x_to_3.4.0_schema.pgsql.sql
+%doc modules/gpgsqlbackend/schema.pgsql.sql
 %{_libdir}/%{name}/libgpgsqlbackend.so
 
 %files backend-pipe
@@ -232,12 +241,16 @@ fi
 %{_libdir}/%{name}/libluabackend.so
 
 %files backend-sqlite
-%doc pdns/dnssec.schema.sqlite3.sql
-%doc pdns/no-dnssec.schema.sqlite3.sql
-%doc pdns/bind-dnssec.schema.sqlite3.sql
+%doc modules/gsqlite3backend/dnssec-3.x_to_3.4.0_schema.sqlite3.sql
+%doc modules/gsqlite3backend/nodnssec-3.x_to_3.4.0_schema.sqlite3.sql
+%doc modules/gsqlite3backend/schema.sqlite3.sql
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
+* Tue Jul 15 2014 Ruben Kerkhof <ruben@tilaa.com> 3.3.1-1..1
+- Upgrade to de6d565b6f2a for various
+  remotebackend fixes
+
 * Tue Dec 17 2013 Morten Stevens <mstevens@imt-systems.com> - 3.3.1-1
 - Update to latest upstream release 3.3.1
 - Some more DNSSEC improvements
