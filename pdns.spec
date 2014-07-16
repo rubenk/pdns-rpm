@@ -247,7 +247,7 @@ fi
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
-* Tue Jul 15 2014 Ruben Kerkhof <ruben@tilaa.com> 3.3.1-1..1
+* Tue Jul 15 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.1.de6d565
 - Upgrade to de6d565b6f2a for various
   remotebackend fixes
 
