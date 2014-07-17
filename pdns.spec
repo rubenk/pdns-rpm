@@ -1,10 +1,10 @@
 %global backends %{nil}
-%global commit 443c40e20e25802414d21e0ced940c1bbbdcdd96
+%global commit de6ce9c239603bfbfb63b0065bf2084b62ac8ca1
 %global shortcommit %(c=%{commit}; echo ${c:0:12})
 
 Name: pdns
 Version: 3.4.0
-Release: 0.4.%{shortcommit}%{?dist}
+Release: 0.5.%{shortcommit}%{?dist}
 Summary: A modern, advanced and high performance authoritative-only nameserver
 Group: System Environment/Daemons
 License: GPLv2
@@ -250,7 +250,11 @@ fi
 %{_libdir}/%{name}/libgsqlite3backend.so
 
 %changelog
-* Thu Jul 17 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.3.443c40e20e25
+* Thu Jul 17 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.5.de6ce9c23960
+- Update to de6ce9c23960
+- Add git to calculate build version
+
+* Thu Jul 17 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.4.443c40e20e25
 - Update to 443c40e20e25
 
 * Wed Jul 16 2014 Ruben Kerkhof <ruben@tilaa.com> 3.4.0-0.3.10df2060f06b
