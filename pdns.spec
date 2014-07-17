@@ -17,17 +17,17 @@ Requires(post): chkconfig
 Requires(preun): initscripts, chkconfig
 Requires(postun): initscripts
 
-BuildRequires: boost-devel
-BuildRequires: lua-devel
-BuildRequires: cryptopp-devel
-BuildRequires: bison
-BuildRequires: polarssl-devel
-BuildRequires: libtool
-BuildRequires: ragel
-BuildRequires: flex
 BuildRequires: asciidoc
-BuildRequires: xmlto
+BuildRequires: bison
+BuildRequires: boost-devel
+BuildRequires: cryptopp-devel
+BuildRequires: flex
+BuildRequires: libtool
+BuildRequires: lua-devel
 BuildRequires: p11-kit-devel
+BuildRequires: polarssl-devel
+BuildRequires: ragel
+BuildRequires: xmlto
 BuildRequires: zeromq-devel
 
 %description
